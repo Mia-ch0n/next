@@ -3,6 +3,8 @@ import "@styles/globals.css";
 import Nav from "@components/Nav";
 import Provider from "@components/Provider";
 
+
+
 export const metadata = {
   title: "mobelite",
   description: "Empowering Collaboration, Problem-Solving, and Recognition in the Mobelite Workspace",

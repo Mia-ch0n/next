@@ -74,6 +74,7 @@
 
 .app {
   @apply relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto sm:px-16 px-6;
+  
 }
 
 .black_btn {
@@ -174,3 +175,25 @@
   padding-top: 90px;
   
 }
+.page-container {
+  display: flex;
+}
+
+.sidebar {
+
+
+ 
+  width: 20%; 
+  min-width: 200px; 
+  max-width: 300px; 
+  position: fixed; 
+  top: 0; 
+  bottom: 0; 
+  left: 0; 
+  overflow-y: auto;
+}
+
+.main-content {
+  margin-left: 20%;
+}
+

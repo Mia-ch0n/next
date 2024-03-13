@@ -1,12 +1,13 @@
-"use client"
-import Link from "next/link";
+'use client';
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signIn, signUp } from "next-auth/react"; 
 import { useSession } from "next-auth/react";
-
+import Link from 'next/link';
+        
 const Nav = () => {
   const { data: session } = useSession();
+  
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -24,17 +25,16 @@ const Nav = () => {
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
         <div className="flex gap-3 md:gap-5">
-        <button type="button" onClick={() => signIn()} className="outline_btnn">
-        Sign In
-      </button>
-      
+       
+        <Link href="/signIn" className="outline_btnn">
+      <button type="button">Sign In</button>
+    </Link>
 
-          <button type="button" onClick={() => signUp()} className="outline_btn">
-            Sign Up
-          </button>
+      
         </div>
       </div>
 
+      
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
         
