@@ -23,7 +23,7 @@ const Nav = () => {
       </Link>
 
       {/* Desktop Navigation */}
-      <div className="sm:flex hidden">
+      <div className="flex">
         <div className="flex gap-3 md:gap-5">
        
         <Link href="/signIn" className="outline_btnn">

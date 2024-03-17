@@ -5,7 +5,7 @@ const Cards = ({title,description,icon}) => {
     const IconComponent = icon;
   return (
     <div
-  className="rounded-lg bg-white p-6 shadow-secondary-1 w-[250px] h-[330px] mt-10 bg-gray-800 shadow-xl hover:scale-105 duration-200">
+  className="rounded-lg p-6 shadow-secondary-1 w-[250px] h-[330px] mt-10 bg-gray-800 shadow-xl hover:scale-105 duration-200">
   <div class="flex justify-center items-center py-8">
   <IconComponent size={50} color="white" />
   </div>
