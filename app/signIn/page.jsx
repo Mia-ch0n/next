@@ -2,10 +2,10 @@ import Link from 'next/link';
 const Signin = () => {
     return (
       <>
-        
-        <div className="flex  flex-1 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5">
+   
+        <div className="flex  flex-1 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 pt-5 pb-20 mt-10">
           <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-            <div className="mx-auto w-full max-w-sm lg:w-96">
+            <div className="mx-auto w-full max-w-sm lg:w-96 ">
               <div>
                 
                 <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -86,7 +86,7 @@ const Signin = () => {
               </div>
             </div>
        
-          
+      
    
       </>
     )
