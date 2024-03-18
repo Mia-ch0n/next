@@ -1,7 +1,9 @@
 'use client';
+import Link from 'next/link';
 import CreatePost from '../components/CreatePost'
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+
 import {
   Bars3Icon,
   BellIcon,
@@ -20,7 +22,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
   { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  {  name: 'Your Profile', href: '#', icon: UserIcon, current: false},
+  {  name: 'Your Profile', href: '/Profile', icon: UserIcon, current: false},
   { name: 'Teams', href: '#', icon: UsersIcon, current: false },
   { name: 'Challenges', href: '#', icon:   PuzzlePieceIcon
   , current: false },
@@ -29,7 +31,7 @@ const navigation = [
 ]
 
 const userNavigation = [
-  { name: 'Your profile', href: '#' },
+  { name: 'Your profile', href: '/UserProfile' },
   { name: 'Sign out', href: '#' },
 ]
 
@@ -109,6 +111,7 @@ function classNames(...classes) {
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                   )}
                                 >
+                                
                                   <item.icon
                                     className={classNames(
                                       item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
@@ -266,7 +269,7 @@ function classNames(...classes) {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
+                            <Link
                               href={item.href}
                               className={classNames(
                                 active ? 'bg-gray-50' : '',
@@ -274,7 +277,7 @@ function classNames(...classes) {
                               )}
                             >
                               {item.name}
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                       ))}
@@ -287,6 +290,7 @@ function classNames(...classes) {
 
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
+          
           </main>
         </div>
       </div>

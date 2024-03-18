@@ -21,9 +21,9 @@ const profile = {
 
  const Profile= () => {
   return (
-    <div>
+    <div className='block w-full  px-40 '>
       <div>
-        <img className="h-32 w-full object-cover lg:h-48" src={profile.backgroundImage} alt="" />
+        <img className="h-32 w-full object-cover lg:h-60" src={profile.backgroundImage} alt="" />
       </div>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
@@ -35,20 +35,7 @@ const profile = {
               <h1 className="truncate text-2xl font-bold text-gray-900">{profile.name}</h1>
             </div>
             <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                <EnvelopeIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                <span>Message</span>
-              </button>
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                <PhoneIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                <span>Call</span>
-              </button>
+       
             </div>
           </div>
         </div>
