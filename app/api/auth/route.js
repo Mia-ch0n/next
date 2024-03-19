@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import EmailProvider from "next-auth/providers/email";
-
 import User from "@models/user";
 import { connectToDB } from "@utils/database";
 

@@ -1,10 +1,10 @@
-import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
+import Settings from "@components/Settings"
 
 const profile = {
-  name: 'Ricardo Cooper',
+  name: 'Tom Cook',
   email: 'ricardo.cooper@example.com',
   avatar:
-    'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   backgroundImage:
     'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
   fields: [
@@ -21,8 +21,8 @@ const profile = {
 
  const Profile= () => {
   return (
-    <div className='block w-full  px-40 '>
-      <div>
+    <div >
+      <div className='block w-full  px-40 '>
         <img className="h-32 w-full object-cover lg:h-60" src={profile.backgroundImage} alt="" />
       </div>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -43,6 +43,8 @@ const profile = {
           <h1 className="truncate text-2xl font-bold text-gray-900">{profile.name}</h1>
         </div>
       </div>
+      
+    <div className="block w-screen ">  <Settings/></div>
     </div>
   )
 }

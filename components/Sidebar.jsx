@@ -1,14 +1,13 @@
 'use client';
 import Link from 'next/link';
-import CreatePost from '../components/CreatePost'
+import CreatePost from './CreatePost'
+import Slides from '@/components/Slides'
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
-
 import {
   Bars3Icon,
   BellIcon,
   CalendarIcon,
- 
   Cog6ToothIcon,
   DocumentDuplicateIcon,
  UserIcon,
@@ -22,7 +21,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
   { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  {  name: 'Your Profile', href: '/Profile', icon: UserIcon, current: false},
+  {  name: 'Your Profile', href: '/UserProfile', icon: UserIcon, current: false},
   { name: 'Teams', href: '#', icon: UsersIcon, current: false },
   { name: 'Challenges', href: '#', icon:   PuzzlePieceIcon
   , current: false },
@@ -34,6 +33,30 @@ const userNavigation = [
   { name: 'Your profile', href: '/UserProfile' },
   { name: 'Sign out', href: '#' },
 ]
+const items = [
+  {
+    imgSrc: '/assets/images/ai.jpg',
+    desc: 'Omnichannel',
+    buttonIconSrc: '/assets/images/tenz.webp',
+  },
+  {
+    imgSrc: '/assets/images/article.jpg',
+    desc: 'Multilingual',
+    buttonIconSrc: '/assets/images/sacy.png',
+  },
+  {
+    imgSrc: '/assets/images/ai.jpg',
+    desc: 'Interpolate',
+    buttonIconSrc: '/assets/images/tenz.webp',
+  },
+  {
+    imgSrc: '/assets/images/article.jpg',
+    desc: 'Enriched',
+    buttonIconSrc: '/assets/images/sacy.png',
+  },
+];
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -186,7 +209,7 @@ function classNames(...classes) {
                     ))}
                   </ul>
                 </li>
-                
+                <div className="text-xs font-semibold leading-6 text-gray-400">suggestions</div>
                 <li className="mt-auto">
                   <a
                     href="#"
@@ -289,12 +312,17 @@ function classNames(...classes) {
           </div>
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
           
+            <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
+         
           </main>
         </div>
       </div>
+      
+      <Slides items={items}/>
+     
     </>
+  
   )
 }
 export default Sidebar;

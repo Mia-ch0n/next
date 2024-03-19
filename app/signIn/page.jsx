@@ -1,7 +1,10 @@
+import Nav from "@components/Nav";
 import Link from 'next/link';
 const Signin = () => {
     return (
       <>
+  
+   <Nav/>
    
         <div className="flex  flex-1 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 pt-5 pb-20 mt-10">
           <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">

@@ -1,11 +1,18 @@
 import { CardsInfo } from '../utils/constants'
+import Nav from "@components/Nav";
 import { TextGenerateEffect } from "@components/Text-Generate";
 import Cards from "../components/Cards.jsx";
 const Home = () => {
   const words = `Mobistack serves as a collaborative hub for Mobelite team members, facilitating the exposition and resolution of technical issues and enabling the exchange of ideas.
 `;
+
   return (
+    <div>
+    <div className='mt-4'>
+    <Nav />
+    </div>
     <div className='home'>
+    
       <section className="w-full flex-center flex-col">
         <h1 className="head_text text-center">Solve & Share
           <br className="max-md:hidden" />
@@ -23,6 +30,7 @@ const Home = () => {
 
       </section>
 
+    </div>
     </div>
   )
 }

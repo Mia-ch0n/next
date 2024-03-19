@@ -50,11 +50,11 @@
       transparent 0%
     ),
     radial-gradient(at 97% 21%, rgb(103, 166, 233) 0px, transparent 50%),
-    radial-gradient(at 52% 99%, rgb(174, 197, 225) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, rgb(53, 94, 144) 0px, transparent 50%),
     radial-gradient(at 10% 29%, rgb(233, 226, 132) 0px, transparent 50%),
     radial-gradient(at 97% 96%, rgb(109, 117, 166) 0px, transparent 50%),
     radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 1) 0px, transparent 50%),
-    radial-gradient(at 79% 53%, rgb(118, 115, 200) 0px, transparent 50%);
+    radial-gradient(at 79% 53%, rgb(22, 19, 106) 0px, transparent 50%);
   position: absolute;
   content: "";
   width: 100%;
@@ -123,19 +123,6 @@
 
 
 
-/* Feed Component */
-.feed {
-  @apply mt-16 mx-auto w-full max-w-xl flex justify-center items-center flex-col gap-2;
-}
-
-/* Form Component */
-.form_textarea {
-  @apply w-full flex rounded-lg h-[200px] mt-2 p-3 text-sm text-gray-500 outline-0;
-}
-
-.form_input {
-  @apply w-full flex rounded-lg mt-2 p-3 text-sm text-gray-500 outline-0;
-}
 
 /* Nav Component */
 .logo_text {
