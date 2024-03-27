@@ -238,11 +238,13 @@ export default function Example() {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 ring-1 ring-grey/5">
             <div className="flex h-16 shrink-0 items-center">
-              <img
+            <Link href="/" className="flex gap-2 flex-center">   
+            <img
                 className="h-8 w-auto"
-                src="/assets/images/mobelite.jpg?color=indigo&shade=500"
+                src="/assets/images/mobelitee.png?color=indigo&shade=500"
                 alt=""
               />
+              </Link>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">

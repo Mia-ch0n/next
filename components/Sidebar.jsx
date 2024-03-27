@@ -175,11 +175,13 @@ function classNames(...classes) {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ">
             <div className="flex h-16 shrink-0 items-center">
-              <img
+            <Link href="/" className="flex gap-2 flex-center"> 
+            <img
                 className="h-8 w-auto"
-                src="/assets/images/mobelite.jpg"
+                src="/assets/images/mobelitee.png"
                 alt=""
               />
+              </Link>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">

@@ -1,46 +1,49 @@
+import { connectMongoDB } from "@/lib/mongodb";
 import NextAuth from "next-auth";
-import EmailProvider from "next-auth/providers/email";
 import User from "@models/user";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+
+export const authOptions = {
   providers: [
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {},
+
+      async authorize(credentials) {
+        const { email, password } = credentials;
+
+        try {
+          await connectMongoDB();
+          const user = await User.findOne({ email });
+
+          if (!user) {
+            return null;
+          }
+
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+
+          if (!passwordsMatch) {
+            return null;
+          }
+
+          return user;
+        } catch (error) {
+          console.log("Error: ", error);
+        }
       },
-      from: process.env.EMAIL_FROM,
     }),
   ],
-  callbacks: {
-    async signIn({ email, password }) {
-      try {
-       
-        const user = await User.findOne({ email });
-
-  
-        if (!user || !comparePassword(password, user.password)) {
-          return false;
-        }
-
-       
-        return true;
-      } catch (error) {
-        console.error("Error during sign-in:", error);
-        return false; 
-      }
-    },
+  session: {
+    strategy: "jwt",
   },
-});
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/feed",
+  },
+};
 
-// Helper function to compare passwords securely
-function comparePassword(password, hash) {
-  // Implement your password comparison logic here
-  // For example, you can use bcrypt.compareSync if you're using bcrypt for password hashing
-}
+const handler = NextAuth(authOptions);
 
-export default handler;
+export { handler as GET, handler as POST };
