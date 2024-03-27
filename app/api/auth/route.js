@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import User from "@models/user";
-import { connectToDB } from "@utils/database";
 
 const handler = NextAuth({
   providers: [
@@ -18,34 +17,30 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session }) {
-      await connectToDB(); 
-
-     
-      const sessionUser = await User.findOne({ email: session.user.email });
-      session.user.id = sessionUser._id.toString();
-      return session;
-    },
-    async signIn({ account, profile, user, credentials }) {
-      await connectToDB(); 
-
+    async signIn({ email, password }) {
       try {
-     
-        const userExists = await User.findOne({ email: profile.email });
-        if (!userExists) {
-          await User.create({
-            email: profile.email,
-            username: profile.name.replace(/ /g, "").toLowerCase(),
-            image: profile.picture,
-          });
+       
+        const user = await User.findOne({ email });
+
+  
+        if (!user || !comparePassword(password, user.password)) {
+          return false;
         }
+
+       
         return true;
       } catch (error) {
-        console.log("Error checking if user exists: ", error.message);
-        return false;
+        console.error("Error during sign-in:", error);
+        return false; 
       }
     },
   },
 });
 
-export { handler as GET, handler as POST };
+// Helper function to compare passwords securely
+function comparePassword(password, hash) {
+  // Implement your password comparison logic here
+  // For example, you can use bcrypt.compareSync if you're using bcrypt for password hashing
+}
+
+export default handler;

@@ -40,7 +40,7 @@ const items = [
     buttonIconSrc: '/assets/images/tenz.webp',
   },
   {
-    imgSrc: '/assets/images/article.jpg',
+    imgSrc: '/assets/images/ai.jpg',
     desc: 'Multilingual',
     buttonIconSrc: '/assets/images/sacy.png',
   },
@@ -50,7 +50,7 @@ const items = [
     buttonIconSrc: '/assets/images/tenz.webp',
   },
   {
-    imgSrc: '/assets/images/article.jpg',
+    imgSrc: '/assets/images/ai.jpg',
     desc: 'Enriched',
     buttonIconSrc: '/assets/images/sacy.png',
   },
@@ -314,12 +314,13 @@ function classNames(...classes) {
           <main className="py-10">
           
             <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
-         
+            
           </main>
+          <Slides items={items}/>
         </div>
       </div>
       
-      <Slides items={items}/>
+      
      
     </>
   

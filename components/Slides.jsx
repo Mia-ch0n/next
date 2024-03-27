@@ -56,7 +56,7 @@ export default function ProgressSlider({ items }) {
               leaveTo="opacity-0 scale-95"
               beforeEnter={() => heightFix()}
             >
-              <img className="rounded-xl" src={item.imgSrc} alt={item.desc} />
+              <img className="rounded-xl w-[150px] mx-80" src={item.imgSrc} alt={item.desc} />
             </Transition>
           ))}
         </div>
