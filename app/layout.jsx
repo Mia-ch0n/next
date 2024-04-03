@@ -1,25 +1,17 @@
 import "@styles/globals.css";
-import Provider from "../components/Provider";
-
+import { AuthProvider } from "./provider";
 export const metadata = {
   title: "mobelite",
   description: "Empowering Collaboration, Problem-Solving, and Recognition in the Mobelite Workspace",
 };
-
-
 const RootLayout = ({ children }) => (
   <html lang='en'>
     <body>
-      <Provider>
-        <div className='main'>
-          <div className='gradient' />
-        </div>
-
-        <main className='app relative'>
-          
-          {children}
-        </main>
-      </Provider>
+      <div className='main'>
+        <div className='gradient' /> </div>
+      <main className='app relative'>
+        <AuthProvider>  {children}</AuthProvider>
+      </main>
     </body>
   </html>
 );
