@@ -8,29 +8,24 @@ const Home = () => {
 
   return (
     <div>
-    <div className='mt-4'>
-    <Nav />
-    </div>
-    <div className='home'>
-    
-      <section className="w-full flex-center flex-col">
-        <h1 className="head_text text-center">Solve & Share
-          <br className="max-md:hidden" />
-          <span className="blue_gradient text-center">Coding Problems</span></h1>
-        <div className="desc text-center"><TextGenerateEffect words={words} /></div>
-        <div className='flex justify-center items-center flex-wrap gap-4 mt-10'>
-          {
-            CardsInfo?.map((card, index) => (
-              <Cards key={index} title={card.title} description={card.description} icon={card.icon} />
-            ))
-          }
-        </div>
-
-
-
-      </section>
-
-    </div>
+      <div className='mt-4'>
+        <Nav />
+      </div>
+      <div className='home'>
+        <section className="w-full flex-center flex-col">
+          <h1 className="head_text text-center">Solve & Share
+            <br className="max-md:hidden" />
+            <span className="blue_gradient text-center">Coding Problems</span></h1>
+          <div className="desc text-center"><TextGenerateEffect words={words} /></div>
+          <div className='flex justify-center items-center flex-wrap gap-4 mt-10'>
+            {
+              CardsInfo?.map((card, index) => (
+                <Cards key={index} title={card.title} description={card.description} icon={card.icon} />
+              ))
+            }
+          </div>
+        </section>
+      </div>
     </div>
   )
 }
