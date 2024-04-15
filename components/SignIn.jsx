@@ -4,7 +4,6 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Nav from "./Nav";
 
-
 export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -18,15 +17,15 @@ export default function SignIn() {
                 password,
                 redirect: false,
             });
-
+            console.log(res);
             if (res.error) {
-                setError("Invalid Credentials");
-                return;
+                throw res.error
             }
 
             router.replace("/feed");
         } catch (error) {
             console.log(error);
+            setError("Invalid Credentials");
         }
     };
 

@@ -1,4 +1,4 @@
-import { connectToDB } from "../../../utils/databse";
+import { connectToDB } from "../../../../utils/databse";
 import NextAuth from "next-auth";
 import User from "@models/user";
 import CredentialsProvider from "next-auth/providers/credentials";
