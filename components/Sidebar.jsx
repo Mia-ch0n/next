@@ -4,12 +4,12 @@ import CreatePost from './CreatePost'
 import Slides from '@/components/Slides'
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
  UserIcon,
   HomeIcon,
   UsersIcon,
@@ -31,7 +31,7 @@ const navigation = [
 
 const userNavigation = [
   { name: 'Your profile', href: '/UserProfile' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Sign out', onClick: signOut },
 ]
 const items = [
   {
@@ -60,11 +60,20 @@ const items = [
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
+  
 }
 
  const Sidebar= () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  
+  const handleSignOut = async () => {
+    const data = await signOut({ redirect: false }); 
+    if (!data.error) {
+      window.location.href = '/signIn'; 
+    } else {
+      console.error('Error signing out:', data.error);
+    }
+  };
   return (
     <>
      
@@ -110,7 +119,6 @@ function classNames(...classes) {
                       </button>
                     </div>
                   </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
@@ -134,7 +142,6 @@ function classNames(...classes) {
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                   )}
                                 >
-                                
                                   <item.icon
                                     className={classNames(
                                       item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
@@ -294,15 +301,15 @@ function classNames(...classes) {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <Link
-                              href={item.href}
-                              className={classNames(
-                                active ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900'
-                              )}
-                            >
-                              {item.name}
-                            </Link>
+                            <button
+                            onClick={handleSignOut}
+                            className={classNames(
+                              active ? 'bg-gray-50' : '',
+                              'block px-3 py-1 text-sm leading-6 text-gray-900'
+                            )}
+                          >
+                            {item.name}
+                          </button>
                           )}
                         </Menu.Item>
                       ))}
@@ -314,7 +321,6 @@ function classNames(...classes) {
           </div>
 
           <main className="py-10">
-          
             <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
             
           </main>
