@@ -76,7 +76,6 @@ function classNames(...classes) {
   };
   return (
     <>
-     
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
