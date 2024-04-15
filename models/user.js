@@ -1,30 +1,30 @@
 import mongoose, { Schema, models } from "mongoose";
 
 const userSchema = new Schema({
-email: {
-    type: String,
-    required: [true, "Please provide email"],
-    unique: true,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
 },
-password: {
-   type: String,
-   required: [true, "Please provide a password"],
-   minlength: 8,
-},
-isVerified: {
-   type: Boolean,
-   default: false,
-},
-isAdmin: {
-    type: Boolean,
-    default: false,
-},
-forgotPasswordToken: String,
-forgotPasswordTokenExpiry: Date,
-verifyToken: String,
-verifyTokenExpiry: Date,
-},
-{ timestamps: true },
+    { timestamps: true },
 );
 
 const User = models.User || mongoose.model("User", userSchema);

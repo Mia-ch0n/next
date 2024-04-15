@@ -21,14 +21,12 @@ export default function SignIn() {
             if (res.error) {
                 throw res.error
             }
-
-            router.replace("/feed");
+            router.replace("feed");
         } catch (error) {
             console.log(error);
             setError("Invalid Credentials");
         }
     };
-
     return (
         <>
             <Nav />
@@ -104,8 +102,6 @@ export default function SignIn() {
                                         >
                                             Sign in
                                         </button>
-
-
                                         {error && (
                                             <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
                                                 {error}
@@ -118,7 +114,7 @@ export default function SignIn() {
                     </div>
                 </div>
             </div>
-        
+
         </>
     );
 }
