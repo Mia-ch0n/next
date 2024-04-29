@@ -1,17 +1,58 @@
 'use client'
 import React, { useState } from 'react';
 import { PaperClipIcon } from '@heroicons/react/20/solid';
+import { useRouter } from "next/navigation";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
-export default function Example() {
+export default function createPost() {
   const [showForm, setShowForm] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const router = useRouter();
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
 
+    setFormData((preState) => ({
+      ...preState,
+      [name]: value,
+    }));
+  };
+
+  const startingPostData = {
+    title: "",
+    description: "",
+  };
+  const [formData, setFormData] = useState(startingPostData);
   const toggleForm = () => {
     setShowForm(!showForm);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/posts', {
+        method: "POST",
+        body: JSON.stringify({ formData }),
+        //@ts-ignore
+        "Content-Type": "application/json",
+      });
+
+      if (response.ok) {
+        // hide the form after successful submission
+        setShowForm(false);
+        // clear the form fields
+        setTitle('');
+        setDescription('');
+        // Handle any other logic after successful submission
+      } else {
+        console.error('Failed to create post:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
+    router.refresh()
+  };
+  
 
   return (
     <div className="relative mx-20">
@@ -23,12 +64,14 @@ export default function Example() {
         Ask a Question
       </button>
       {showForm && (
-        <form action="#" className="overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
+        <form onSubmit={handleSubmit} className="overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500" method="post">
           <label htmlFor="title" className="sr-only">Title</label>
           <input
             type="text"
             name="title"
             id="title"
+            value={formData.title}
+            onChange={handleChange}
             className="block w-full border-0 pt-2.5 text-lg font-medium placeholder:text-gray-400 focus:ring-0"
             placeholder="Title"
           />
@@ -37,6 +80,8 @@ export default function Example() {
             rows={2}
             name="description"
             id="description"
+            value={formData.description}
+            onChange={handleChange}
             className="block w-full resize-none border-0 py-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
             placeholder="Write a description..."
             defaultValue={''}

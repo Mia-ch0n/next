@@ -6,14 +6,14 @@ const PostCard = () => {
       <div className="bg-white shadow-2xl rounded-lg mb-6 tracking-wide">
         <div className="md:flex-shrink-0">
           <img
-            src="https://ik.imagekit.io/q5edmtudmz/post1_fOFO9VDzENE.jpg"
-            alt="mountains"
+            src="https://chatai.com/wp-content/uploads/2023/11/tr71123-ai-art.jpeg"
+            alt=""
             className="w-full h-64 rounded-lg rounded-b-none"
           />
         </div>
         <div className="px-4 py-2 mt-2">
           <h2 className="font-bold text-2xl text-gray-800 tracking-normal">
-            My Amazing Journey to the Mountains.
+            New AI has dropped.
           </h2>
           <p className="text-sm text-gray-700 px-2 mr-1">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora reiciendis ad architecto at aut placeat quia, minus dolor praesentium officia maxime deserunt porro amet ab debitis deleniti modi soluta

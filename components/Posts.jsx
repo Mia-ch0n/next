@@ -17,7 +17,7 @@ const posts = [
     },
   },
 ]
-export default function Example() {
+export default function Posts() {
   return (
     <div className="">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">

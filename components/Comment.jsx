@@ -1,7 +1,6 @@
 
 "use client"
 import { Fragment, useState } from 'react'
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import {
   FaceFrownIcon,
   FaceSmileIcon,
@@ -45,7 +44,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Comment() {
   const [selected, setSelected] = useState(moods[5])
 
   return (

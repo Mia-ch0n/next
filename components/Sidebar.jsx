@@ -10,7 +10,7 @@ import {
   Bars3Icon,
   BellIcon,
   Cog6ToothIcon,
- UserIcon,
+  UserIcon,
   HomeIcon,
   UsersIcon,
   XMarkIcon,
@@ -21,12 +21,14 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
   { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  {  name: 'Your Profile', href: '/UserProfile', icon: UserIcon, current: false},
+  { name: 'Your Profile', href: '/UserProfile', icon: UserIcon, current: false },
   { name: 'Teams', href: '#', icon: UsersIcon, current: false },
-  { name: 'Challenges', href: '#', icon:   PuzzlePieceIcon
-  , current: false },
-  { name: 'Enlightenment', href: '#', icon: LightBulbIcon, current: false },
-  
+  {
+    name: 'Challenges', href: '#', icon: PuzzlePieceIcon
+    , current: false
+  },
+  { name: 'Enlightenment', href: '/enlight', icon: LightBulbIcon, current: false },
+
 ]
 
 const userNavigation = [
@@ -60,16 +62,16 @@ const items = [
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
-  
+
 }
 
- const Sidebar= () => {
+const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  
+
   const handleSignOut = async () => {
-    const data = await signOut({ redirect: false }); 
+    const data = await signOut({ redirect: false });
     if (!data.error) {
-      window.location.href = '/signIn'; 
+      window.location.href = '/signIn';
     } else {
       console.error('Error signing out:', data.error);
     }
@@ -154,7 +156,7 @@ function classNames(...classes) {
                             ))}
                           </ul>
                         </li>
-                        
+
                         <li className="mt-auto">
                           <a
                             href="#"
@@ -181,12 +183,12 @@ function classNames(...classes) {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ">
             <div className="flex h-16 shrink-0 items-center">
-            <Link href="/" className="flex gap-2 flex-center"> 
-            <img
-                className="h-8 w-auto"
-                src="/assets/images/mobelitee.png"
-                alt=""
-              />
+              <Link href="/" className="flex gap-2 flex-center">
+                <img
+                  className="h-8 w-auto"
+                  src="/assets/images/mobelitee.png"
+                  alt=""
+                />
               </Link>
             </div>
             <nav className="flex flex-1 flex-col">
@@ -301,14 +303,14 @@ function classNames(...classes) {
                         <Menu.Item key={item.name}>
                           {({ active }) => (
                             <button
-                            onClick={handleSignOut}
-                            className={classNames(
-                              active ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900'
-                            )}
-                          >
-                            {item.name}
-                          </button>
+                              onClick={handleSignOut}
+                              className={classNames(
+                                active ? 'bg-gray-50' : '',
+                                'block px-3 py-1 text-sm leading-6 text-gray-900'
+                              )}
+                            >
+                              {item.name}
+                            </button>
                           )}
                         </Menu.Item>
                       ))}
@@ -320,17 +322,17 @@ function classNames(...classes) {
           </div>
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8"><CreatePost/></div>
-            
+            <div className="px-4 sm:px-6 lg:px-8"><CreatePost /></div>
+
           </main>
-          <Slides items={items}/>
+          <Slides items={items} />
         </div>
       </div>
-      
-      
-     
+
+
+
     </>
-  
+
   )
 }
 export default Sidebar;
