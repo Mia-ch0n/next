@@ -17,15 +17,21 @@ export const authOptions = {
         try {
           await connectToDB();
           const user = await User.findOne({ email });
-
+      
           if (!user) {
             return null;
           }
+      
           const passwordsMatch = await bcrypt.compare(password, user.password);
           if (!passwordsMatch) {
             return null;
           }
-          return user;
+      
+          // Check for presence of `isAdmin` field and assign role accordingly
+          const isAdmin = user.hasOwnProperty('isAdmin') && user.isAdmin;
+          const role = isAdmin ? 'admin' : 'user';
+      
+          return { ...user, role };
         } catch (error) {
           console.log("Error: ", error);
         }

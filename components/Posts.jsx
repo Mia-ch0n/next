@@ -1,6 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Comment from './Comment';
+import Delete from './Delete';
+//import Edit from './Edit';
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -30,16 +32,20 @@ export default function Posts() {
 
   return (
     <div className="">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className=" border-t border-gray-200 pt-10 sm:mt-10 sm:pt-16">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 ">
+        <div className="mx-auto max-w-4xl ">
+          <div className=" border-t border-gray-200 pt-10 sm:mt-10 sm:pt-16 ">
             {posts.map((post) => (
               <article key={post._id} className="flex flex-col items-start justify-between rounded-lg mb-6">
+              <Delete id={post._id} />
+              {/*<Edit id={post._id} />*/}
                 <div className="group relative">
-                  <h3 className="mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                  <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <span className="absolute inset-0" />
+                    
                     {post.title}
                   </h3>
+                 
                   <div className="flex items-center gap-x-4 text-sm mt-2">
                     <time dateTime={post._id} className="text-gray-500">
                       {formatCreatedAt(post._id)}
@@ -49,14 +55,18 @@ export default function Posts() {
                 </div>
                 <div className="relative mt-8 mb-8 flex items-center gap-x-4">
                   {/* Render author information here */}
+
+                </div>
+                <div className='w-[500px]'>
+                  <Comment  />
                 </div>
               </article>
             ))}
           </div>
-          <Comment />
+
         </div>
       </div>
     </div>
+    
   );
 }
-

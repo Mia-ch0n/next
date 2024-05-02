@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 const postSchema = new Schema({
   title: String,
   description: String,
+
 });
 
 const Post = mongoose.models.Post || mongoose.model('Post', postSchema);

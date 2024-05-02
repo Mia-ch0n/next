@@ -52,7 +52,7 @@ export default function createPost() {
     }
     router.refresh()
   };
-  
+
 
   return (
     <div className="relative mx-20">

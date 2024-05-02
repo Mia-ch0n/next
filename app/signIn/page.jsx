@@ -5,8 +5,13 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  if (session) redirect("/feed");
-  return (
-    <SignIn />
-  );
+  console.log("Session:", session);
+  if (session) {
+    if (session.user.role === "admin") { 
+      redirect("/AdminDash");
+    } else {
+      redirect("/feed");
+    }
+  }
+  return <SignIn />;
 }
