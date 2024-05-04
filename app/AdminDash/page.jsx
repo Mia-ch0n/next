@@ -13,7 +13,7 @@ import {
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
-    { name: 'User s Activity', href: '#', icon: SignalIcon, current: false },
+    { name: 'User s Activity', href: '/AdminDash', icon: SignalIcon, current: false },
   { name: 'Create Challenge', href: '/CreateChallenge', icon: PuzzlePieceIcon, current: false },
   { name: 'Settings', href: '#', icon: Cog6ToothIcon, current: false },
 ]
@@ -46,7 +46,7 @@ const activityItems = [
     commit: '10',
     branch: 'answers',
     status: '4',
-    duration: '5 stars',
+    ups: '20',
     date: '45 minutes ago',
     dateTime: '2023-01-23T11:00',
   },
@@ -279,15 +279,13 @@ export default function Example() {
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div>
                     <h1 className="flex gap-x-3 text-base leading-7 ">
-                      <span className="font-semibold text-grey">Planetaria</span>
-                      <span className="text-gray-600">/</span>
-                      <span className="font-semibold text-grey">mobile-api</span>
+                      <span className="font-semibold text-grey">Admin dashboard</span>
                     </h1>
                   </div>
-                  <p className="mt-2 text-xs leading-6 text-gray-400">Deploys from GitHub via main branch</p>
+                  <p className="mt-2 text-xs leading-6 text-gray-400">u can track user s activity here</p>
                 </div>
                 <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none">
-                  Production
+                  switch user
                 </div>
               </div>
 
@@ -334,7 +332,7 @@ export default function Example() {
                     Posts
                     </th>
                     <th scope="col" className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">
-                      Rate
+                      UPs
                     </th>
                     
                   </tr>
@@ -368,7 +366,7 @@ export default function Example() {
                         </div>
                       </td>
                       <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                        {item.duration}
+                        {item.ups}
                       </td>
                       
                     </tr>

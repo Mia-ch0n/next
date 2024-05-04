@@ -9,12 +9,10 @@ export default function Comment() {
     try {
       const response = await fetch('/api/comments', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ text: comment }),
+        //@ts-ignore
+        "Content-Type": "application/json",
       });
-
       if (response.ok) {
         setComment('');
         console.log('Comment submitted successfully!');
@@ -35,7 +33,7 @@ export default function Comment() {
         className="h-6 w-6 flex-none rounded-full bg-gray-50"
       />
       <form onSubmit={handleSubmit} className="relative flex-auto" method="post">
-      
+
         <div className="overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label htmlFor="comment" className="sr-only">
             Add your comment

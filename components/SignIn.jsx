@@ -13,6 +13,22 @@ export default function SignIn() {
   const { data: session, status } = useSession();
 
   const handleSubmit = async (e) => {
+
+    const getUser =  () => {
+       return new Promise(async(resolve, reject) => {
+        const res = await fetch('/api/user', {
+          method: "POST",
+          body: JSON.stringify({ email }),
+          //@ts-ignore
+          "Content-Type": "application/json",
+        })
+        await res.json().then(res1=>{
+            resolve(res1.user)
+        })
+       })
+      
+    }
+
     e.preventDefault();
     try {
       const res = await signIn("credentials", {
@@ -20,11 +36,14 @@ export default function SignIn() {
         password,
         redirect: false, // Prevent default redirection by NextAuth
       });
+
+      console.log("sigin: ", res);
       if (res.error) {
         throw res.error;
       }
-      // Redirect based on user role
-      if (session?.user?.role === "admin") {
+      const user = await getUser()
+ 
+      if (user?.isAdmin) {
         router.replace("/AdminDash");
       } else {
         router.replace("/feed");

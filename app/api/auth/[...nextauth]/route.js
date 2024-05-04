@@ -6,48 +6,69 @@ import bcrypt from "bcryptjs";
 
 
 export const authOptions = {
+
+
+};
+
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {},
-
       async authorize(credentials) {
         const { email, password } = credentials;
 
         try {
           await connectToDB();
           const user = await User.findOne({ email });
-      
+
           if (!user) {
             return null;
           }
-      
+
           const passwordsMatch = await bcrypt.compare(password, user.password);
           if (!passwordsMatch) {
             return null;
           }
-      
-          // Check for presence of `isAdmin` field and assign role accordingly
           const isAdmin = user.hasOwnProperty('isAdmin') && user.isAdmin;
           const role = isAdmin ? 'admin' : 'user';
-      
-          return { ...user, role };
+          // step  0
+          return { email: user.email, role: role}
+
         } catch (error) {
           console.log("Error: ", error);
         }
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
+  callbacks: {
+    // step 1
+    jwt({ token, user }) {
+      if (user) token.role = user.role
+      return token
+    }, // step 2
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token and user id from a provider.
+      // console.log({ session, token, user });
+      // session.accessToken = token.accessToken
+      session.user.id = token.id
+      session.user.email = token.email
+      session.user.role = token.role
+
+      return session
+    },
+
   },
-  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/feed",
     signOut: "signIn",
   },
-};
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: true
 
-const handler = NextAuth(authOptions);
-
+});
 export { handler as GET, handler as POST };
+

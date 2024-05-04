@@ -14,17 +14,18 @@ export async function PUT(req, { params }) {
     const body = await req.json();
     const postData = body.formData;
 
-    const updatePostData = await Post.findByIdAndUpdate(id, {
-      ...postData,
-    });
+    const updatedPost = await Post.findByIdAndUpdate(id, postData, { new: true });
 
-    return NextResponse.json({ message: "Post updated" }, { status: 200 });
+    if (!updatedPost) {
+      return NextResponse.json({ message: "Post not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Post updated successfully!", updatedPost }, { status: 200 });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ message: "Error", error }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ message: "Error updating post" }, { status: 500 });
   }
 }
-
 export async function DELETE(req, { params }) {
   try {
     const { id } = params;

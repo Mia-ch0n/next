@@ -70,6 +70,7 @@ const Sidebar = () => {
 
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false });
+    console.log(data);
     if (!data.error) {
       window.location.href = '/signIn';
     } else {

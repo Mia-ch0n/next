@@ -51,6 +51,7 @@ export default function createPost() {
       console.error('Error creating post:', error);
     }
     router.refresh()
+    router.push('/')
   };
 
 
