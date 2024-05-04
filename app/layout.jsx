@@ -1,7 +1,7 @@
 import "@styles/globals.css";
 import { AuthProvider } from "./provider";
 export const metadata = {
-  title: "mobelite",
+  title: "Mobistack",
   description: "Empowering Collaboration, Problem-Solving, and Recognition in the Mobelite Workspace",
 };
 const RootLayout = ({ children }) => (
