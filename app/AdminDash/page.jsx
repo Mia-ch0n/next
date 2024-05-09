@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react';
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Menu } from '@headlessui/react'
+import Form from "../../components/Form"
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import {
   ChartBarSquareIcon,
@@ -49,8 +50,8 @@ const activityItems = [
     branch: 'answers',
     status: '4',
     ups: '20',
-    date: '45 minutes ago',
-    dateTime: '2023-01-23T11:00',
+    downs: '20',
+  
   },
 
 ]
@@ -59,18 +60,22 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false });
-    console.log(data);
+
     if (!data.error) {
       window.location.href = '/signIn';
     } else {
       console.error('Error signing out:', data.error);
     }
   };
+  const [showModal, setShowModal] = useState(false);
 
+  const toggleModal = () => {
+    setShowModal((prevShowModal) => !prevShowModal);
+  };
   return (
     <>
       <div className='block w-screen '>
@@ -218,11 +223,40 @@ export default function Example() {
                   </div>
                   <p className="mt-2 text-xs leading-6 text-gray-400">u can track user s activity here</p>
                 </div>
-                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none">
-                  switch user
+                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none ">
+                  <button onClick={toggleModal}>Add User</button>
                 </div>
               </div>
-
+              {showModal && (
+                <div className="fixed z-10 inset-0 overflow-y-auto">
+                  <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                    </div>
+                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                    <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                      <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div className="sm:flex sm:items-start">
+                          <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Add User</h3>
+                            {/* Render the CreateUserForm component */}
+                            <Form />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button
+                          type="button"
+                          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                          onClick={toggleModal}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* Stats */}
               <div className="grid grid-cols-1 bg-gray-700/10 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map((stat, statIdx) => (
@@ -268,6 +302,9 @@ export default function Example() {
                     <th scope="col" className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">
                       UPs
                     </th>
+                    <th scope="col" className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20">
+                      Downs
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5">
@@ -289,9 +326,7 @@ export default function Example() {
                       </td>
                       <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
                         <div className="flex items-center justify-end gap-x-2 sm:justify-start">
-                          <time className="text-gray-400 sm:hidden" dateTime={item.dateTime}>
-                            {item.date}
-                          </time>
+                         
                           <div className={classNames(statuses[item.status], 'flex-none rounded-full p-1')}>
                             <div className="h-1.5 w-1.5 rounded-full bg-current" />
                           </div>
@@ -301,6 +336,17 @@ export default function Example() {
                       <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
                         {item.ups}
                       </td>
+                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                        {item.downs}
+                      </td>
+                     
+                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-8">
+                       <button>delete</button>
+                      </td>
+                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                       <button>edit</button>
+                      </td>
+                    
                     </tr>
                   ))}
                 </tbody>

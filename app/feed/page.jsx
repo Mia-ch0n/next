@@ -1,15 +1,7 @@
 import Sidebar from '@components/Sidebar'
 import Posts from '@components/Posts'
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@app/api/auth/[...nextauth]/route';
-
-
 function Feeed() {
 
-  getServerSession(authOptions).then(value => {
-    console.log(value);
-  })
-  
   return (
     <div className="main-content">
       <div className='w-screen absolute left-0'>

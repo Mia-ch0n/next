@@ -1,3 +1,6 @@
 export { default } from "next-auth/middleware";
 
-export const config = { matcher: ["/feed","/AdminDash"] };
+export const config = {
+    matcher: ["/feed", "/AdminDash"]
+
+};

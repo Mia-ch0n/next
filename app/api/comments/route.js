@@ -1,10 +1,5 @@
 import Comment from '../../../models/Comment';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-
-getServerSession().then(session=>{
-  console.log(session);
-})
 
 export async function POST(req) {
   try {

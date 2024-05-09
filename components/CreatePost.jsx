@@ -2,8 +2,11 @@
 import React, { useState } from 'react';
 import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
+import { useSession } from 'next-auth/react';
 
-export default function createPost() {
+export default  function createPost() {
+  const session = useSession()
+
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -30,9 +33,22 @@ export default function createPost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if(session.data.user.email == undefined){
+        throw new Error('Email not found! check session!')
+      }
+      console.log('create post ',session.data.user.email )
+      // call api
+      const userResponse = await fetch('/api/user', {
+        method: "POST",
+        body: JSON.stringify({ email:session.data.user.email }),
+      })
+      const {user} = await userResponse.json()
+      if (user._id == undefined){
+        throw new Error('Id not found!')
+      }
       const response = await fetch('/api/posts', {
         method: "POST",
-        body: JSON.stringify({ formData }),
+        body: JSON.stringify({ ...formData,author:user?._id }),
         //@ts-ignore
         "Content-Type": "application/json",
       });
@@ -51,7 +67,7 @@ export default function createPost() {
       console.error('Error creating post:', error);
     }
     router.refresh()
-    router.push('/')
+   
   };
 
 

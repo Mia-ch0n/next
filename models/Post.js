@@ -6,6 +6,9 @@ mongoose.Promise = global.Promise;
 const postSchema = new Schema({
   title: String,
   description: String,
+  createdBy: String,
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
+
 });
 
 const Post = mongoose.models.Post || mongoose.model('Post', postSchema);

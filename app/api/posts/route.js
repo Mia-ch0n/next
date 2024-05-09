@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate('author').exec();
+    console.log(posts);
+
     return NextResponse.json({ posts }, { status: 200 });
   } catch (err) {
     console.log(err);
@@ -14,8 +16,9 @@ export async function GET() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const post = body.formData;
-    await Post.create(post);
+    console.log("API post ",body);
+    await Post.create(body);
+  
     return NextResponse.json({ message: "Post Created" }, { status: 201 });
   } catch (err) {
     console.log(err);
