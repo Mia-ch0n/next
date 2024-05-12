@@ -3,9 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const posts = await Post.find().populate('author').exec();
-    console.log(posts);
-
+    const posts = await Post.find().populate('author').exec(); //.populate('comments')
     return NextResponse.json({ posts }, { status: 200 });
   } catch (err) {
     console.log(err);

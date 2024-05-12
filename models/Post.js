@@ -8,7 +8,7 @@ const postSchema = new Schema({
   description: String,
   createdBy: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 });
 
 const Post = mongoose.models.Post || mongoose.model('Post', postSchema);

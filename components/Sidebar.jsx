@@ -1,11 +1,12 @@
-'use client';
-import Link from 'next/link';
-import CreatePost from './CreatePost'
-import Slides from '@/components/Slides'
-import { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
+"use client";
+import Link from "next/link";
+import CreatePost from "./CreatePost";
+import Slides from "@/components/Slides";
+import { Fragment, useState } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import {
   Bars3Icon,
   BellIcon,
@@ -15,73 +16,115 @@ import {
   UsersIcon,
   XMarkIcon,
   PuzzlePieceIcon,
-  LightBulbIcon
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+  LightBulbIcon,
+} from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/20/solid";
 
 const navigation = [
-  { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  { name: 'Your Profile', href: '/UserProfile', icon: UserIcon, current: false },
-  { name: 'Teams', href: '#', icon: UsersIcon, current: false },
+  { name: "Home", href: "#", icon: HomeIcon, current: true },
   {
-    name: 'Challenges', href: '#', icon: PuzzlePieceIcon
-    , current: false
+    name: "Your Profile",
+    href: "/UserProfile",
+    icon: UserIcon,
+    current: false,
   },
-  { name: 'Enlightenment', href: '/enlight', icon: LightBulbIcon, current: false },
-
-]
-
-const userNavigation = [
-  { name: 'Your profile', href: '/UserProfile' },
-  { name: 'Sign out', onClick: signOut },
-]
-const items = [
+  { name: "Teams", href: "#", icon: UsersIcon, current: false },
   {
-    imgSrc: '/assets/images/ai.jpg',
-    desc: 'Omnichannel',
-    buttonIconSrc: '/assets/images/tenz.webp',
+    name: "Challenges",
+    href: "#",
+    icon: PuzzlePieceIcon,
+    current: false,
   },
   {
-    imgSrc: '/assets/images/ai.jpg',
-    desc: 'Multilingual',
-    buttonIconSrc: '/assets/images/sacy.png',
-  },
-  {
-    imgSrc: '/assets/images/ai.jpg',
-    desc: 'Interpolate',
-    buttonIconSrc: '/assets/images/tenz.webp',
-  },
-  {
-    imgSrc: '/assets/images/ai.jpg',
-    desc: 'Enriched',
-    buttonIconSrc: '/assets/images/sacy.png',
+    name: "Enlightenment",
+    href: "/enlight",
+    icon: LightBulbIcon,
+    current: false,
   },
 ];
 
-
+const userNavigation = [
+  { name: "Your profile", href: "/UserProfile" },
+  { name: "Sign out", onClick: signOut },
+];
+const items = [
+  {
+    imgSrc: "/assets/images/ai.jpg",
+    desc: "Omnichannel",
+    buttonIconSrc: "/assets/images/tenz.webp",
+  },
+  {
+    imgSrc: "/assets/images/ai.jpg",
+    desc: "Multilingual",
+    buttonIconSrc: "/assets/images/sacy.png",
+  },
+  {
+    imgSrc: "/assets/images/ai.jpg",
+    desc: "Interpolate",
+    buttonIconSrc: "/assets/images/tenz.webp",
+  },
+  {
+    imgSrc: "/assets/images/ai.jpg",
+    desc: "Enriched",
+    buttonIconSrc: "/assets/images/sacy.png",
+  },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-
+  return classes.filter(Boolean).join(" ");
 }
 
 const Sidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false });
     console.log(data);
     if (!data.error) {
-      window.location.href = '/signIn';
+      window.location.href = "/signIn";
     } else {
-      console.error('Error signing out:', data.error);
+      console.error("Error signing out:", data.error);
     }
   };
+  const [userInfo, setUserInfo] = useState(null);
+  const { data: session } = useSession();
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch("/api/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: session.user.email }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data.user);
+        } else {
+          console.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
+
+    if (session) {
+      fetchUserInfo();
+    }
+  }, [session]);
   return (
     <>
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+          <Dialog
+            as="div"
+            className="relative z-50 lg:hidden"
+            onClose={setSidebarOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -115,9 +158,16 @@ const Sidebar = () => {
                     leaveTo="opacity-0"
                   >
                     <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                      <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
+                      <button
+                        type="button"
+                        className="-m-2.5 p-2.5"
+                        onClick={() => setSidebarOpen(false)}
+                      >
                         <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                        <XMarkIcon
+                          className="h-6 w-6 text-white"
+                          aria-hidden="true"
+                        />
                       </button>
                     </div>
                   </Transition.Child>
@@ -139,15 +189,17 @@ const Sidebar = () => {
                                   href={item.href}
                                   className={classNames(
                                     item.current
-                                      ? 'bg-indigo-700 text-white'
-                                      : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                      ? "bg-indigo-700 text-white"
+                                      : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
                                   <item.icon
                                     className={classNames(
-                                      item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
-                                      'h-6 w-6 shrink-0'
+                                      item.current
+                                        ? "text-white"
+                                        : "text-indigo-200 group-hover:text-white",
+                                      "h-6 w-6 shrink-0"
                                     )}
                                     aria-hidden="true"
                                   />
@@ -202,15 +254,17 @@ const Sidebar = () => {
                           href={item.href}
                           className={classNames(
                             item.current
-                              ? 'bg-indigo-700 text-white'
-                              : 'text-indigo-200 hover:text-white hover:bg-indigo-700',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                              ? "bg-indigo-700 text-white"
+                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
                           <item.icon
                             className={classNames(
-                              item.current ? 'text-white' : 'text-indigo-200 group-hover:text-white',
-                              'h-6 w-6 shrink-0'
+                              item.current
+                                ? "text-white"
+                                : "text-indigo-200 group-hover:text-white",
+                              "h-6 w-6 shrink-0"
                             )}
                             aria-hidden="true"
                           />
@@ -220,7 +274,9 @@ const Sidebar = () => {
                     ))}
                   </ul>
                 </li>
-                <div className="text-xs font-semibold leading-6 text-gray-400">suggestions</div>
+                <div className="text-xs font-semibold leading-6 text-gray-400">
+                  suggestions
+                </div>
                 <li className="mt-auto">
                   <a
                     href="#"
@@ -240,13 +296,20 @@ const Sidebar = () => {
 
         <div className="lg:pl-72">
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-            <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
+            <button
+              type="button"
+              className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
 
             {/* Separator */}
-            <div className="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
+            <div
+              className="h-6 w-px bg-gray-900/10 lg:hidden"
+              aria-hidden="true"
+            />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <form className="relative flex flex-1" action="#" method="GET">
@@ -266,28 +329,44 @@ const Sidebar = () => {
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                <button
+                  type="button"
+                  className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Separator */}
-                <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
+                <div
+                  className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
+                  aria-hidden="true"
+                />
 
                 {/* Profile dropdown */}
+                {userInfo && (
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
+                  
                     <span className="sr-only">Open user menu</span>
+                    
                     <img
                       className="h-8 w-8 rounded-full bg-gray-50"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src={userInfo.profilePic}
                       alt=""
                     />
                     <span className="hidden lg:flex lg:items-center">
-                      <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                        Tom Cook
+                      <span
+                        className="ml-4 text-sm font-semibold leading-6 text-gray-900"
+                        aria-hidden="true"
+                      >
+                        {userInfo.fullName}
                       </span>
-                      <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                    
+                      <ChevronDownIcon
+                        className="ml-2 h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
                     </span>
                   </Menu.Button>
                   <Transition
@@ -306,8 +385,8 @@ const Sidebar = () => {
                             <button
                               onClick={handleSignOut}
                               className={classNames(
-                                active ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900'
+                                active ? "bg-gray-50" : "",
+                                "block px-3 py-1 text-sm leading-6 text-gray-900"
                               )}
                             >
                               {item.name}
@@ -318,22 +397,20 @@ const Sidebar = () => {
                     </Menu.Items>
                   </Transition>
                 </Menu>
+                    )}
               </div>
             </div>
           </div>
 
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8"><CreatePost /></div>
-
+            <div className="px-4 sm:px-6 lg:px-8">
+              <CreatePost />
+            </div>
           </main>
           <Slides items={items} />
         </div>
       </div>
-
-
-
     </>
-
-  )
-}
+  );
+};
 export default Sidebar;

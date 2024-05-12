@@ -4,6 +4,7 @@ import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 
+
 export default  function createPost() {
   const session = useSession()
 

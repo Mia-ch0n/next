@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from "react";
 import Comment from "./Comment";
 import Delete from "./Delete";
+import Up from "../components/Up";
+import Down from "../components/Down";
 //import Edit from './Edit';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
 // import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -13,6 +14,8 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
   const user = useSession()?.data?.user;
   const router = useRouter();
+  const [upvotes, setUpvote] = useState([]);
+  const [downvotes, setDownvote] = useState([]);
 
   useEffect(() => {
     async function fetchPosts() {
@@ -29,32 +32,32 @@ export default function Posts() {
         console.error("Error fetching posts:", error);
       }
     }
-
     fetchPosts();
   }, []);
-
-  async function fetchUser(email) {
-    try {
-      const response = await fetch(`/api/user?email=${email}`);
-      if (response.ok) {
-        const data = await response.json();
-        return data.user;
-      } else {
-        console.error(
-          `Failed to fetch user with email ${email}:`,
-          response.statusText
-        );
-        return null;
-      }
-    } catch (error) {
-      console.error(`Error fetching user with email ${email}:`, error);
-      return null;
-    }
-  }
 
   const formatCreatedAt = (id) => {
     const timestamp = parseInt(id.substring(0, 8), 16) * 1000;
     return new Date(timestamp).toLocaleDateString();
+  };
+
+  const handleVote = (isUp) => {
+    if (isUp) {
+      //upvote logic
+      if (upvotes.includes(user.email)) {
+        let res = upvotes.filter((ids) => ids != user.email);
+        setUpvote(res);
+      } else {
+        setUpvote((prevState) => [...prevState, user.email]);
+      }
+    } else {
+      //dowvote logic
+      if (downvotes.includes(user.email)) {
+        let res = downvotes.filter((ids) => ids !== user.email);
+        setDownvote(res);
+      } else {
+        setDownvote((prevState) => [...prevState, user.email]);
+      }
+    }
   };
 
   return (
@@ -67,8 +70,27 @@ export default function Posts() {
                 key={post._id}
                 className="flex flex-col items-start justify-between rounded-lg mb-6"
               >
-                {user?.email == post.author.email  ? <Delete id={post._id} />:null}
-                <div className="group relative">
+                <div className="flex items-end justify-end w-full gap-x-4">
+                <div className="flex flex-col">
+                <Up
+                  count={upvotes.length}
+                  onPress={() => {
+                    handleVote(true);
+                  }}
+                />
+                <Down
+                  count={downvotes.length}
+                  onPress={() => {
+                    handleVote(false);
+                  }}
+                />
+              </div>
+                  {user?.email === post.author.email && (
+                    <Delete id={post._id} />
+                  )}
+                </div>
+
+                <div className="group relative w-full">
                   <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <span className="absolute inset-0" />
                     {post.title}
@@ -99,9 +121,15 @@ export default function Posts() {
                     <p className="text-gray-600">{post?.author?.job}</p>
                   </div>
                 </div>
-                <div className="w-[500px]">
-                  <Comment />
-                </div>
+                <section>
+                  <div className="w-[500px]">
+                    <Comment postID={post._id} />
+                    Comments
+                    {post.comments.map(({ text }) => (
+                      <p>{text}</p>
+                    ))}
+                  </div>
+                </section>
               </article>
             ))}
           </div>

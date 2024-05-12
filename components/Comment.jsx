@@ -1,39 +1,73 @@
-import { useState } from 'react'
-import { PaperClipIcon } from '@heroicons/react/20/solid'
+import { useState } from "react";
+import { PaperClipIcon } from "@heroicons/react/20/solid";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+export default function Comment({ postID }) {
+  const [comment, setComment] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const { data: session } = useSession();
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch("/api/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: session.user.email }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data.user);
+        } else {
+          console.error("Failed to fetch user information");
+        }
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      }
+    };
 
-export default function Comment() {
-  const [comment, setComment] = useState('')
-
+    if (session) {
+      fetchUserInfo();
+    }
+  }, [session]);
+  //chnage thissss like in post and user rs
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
-        body: JSON.stringify({ text: comment }),
+      console.log("post ", postID);
+      const response = await fetch("/api/comments", {
+        method: "POST",
+        body: JSON.stringify({ text: comment, post: postID }),
         //@ts-ignore
         "Content-Type": "application/json",
       });
       if (response.ok) {
-        setComment('');
-        console.log('Comment submitted successfully!');
+        setComment("");
+        console.log("Comment submitted successfully!");
       } else {
-        console.error('Failed to submit comment:', response.statusText);
+        console.error("Failed to submit comment:", response.statusText);
       }
     } catch (error) {
-      console.error('Error submitting comment:', error);
+      console.error("Error submitting comment:", error);
     }
   };
 
-
   return (
+    
     <div className="mt-6 flex gap-x-3">
+    {userInfo && (
       <img
-        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        src={userInfo.profilePic}
         alt=""
         className="h-6 w-6 flex-none rounded-full bg-gray-50"
       />
-      <form onSubmit={handleSubmit} className="relative flex-auto" method="post">
-
+    )}
+      <form
+        onSubmit={handleSubmit}
+        className="relative flex-auto"
+        method="post"
+      >
         <div className="overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label htmlFor="comment" className="sr-only">
             Add your comment
@@ -66,5 +100,5 @@ export default function Comment() {
         </div>
       </form>
     </div>
-  )
+  );
 }

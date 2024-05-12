@@ -1,17 +1,18 @@
 import Comment from '../../../models/Comment';
+import Post from '../../../models/Post';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
-    const { text, author } = await req.json();
-
-
-
-    const comment = await Comment.create({ text, userId:'test'  });
+    const body = await req.json();
+    let comment = await Comment.create(body);
+   
     // get comment id
     // retrieve lel post find by id
+    const postDoc = await Post.findOne({_id:comment.post})
     // update llpost comment list = [123,564,98]
-
+    postDoc.comments = [...postDoc.comments,comment._id]
+    postDoc.save()
     return NextResponse.json({ message: 'Comment Created',body: comment }, { status: 201 });
   } catch (err) {
     console.error(err);
@@ -20,11 +21,10 @@ export async function POST(req) {
 }
 
 
-export async function GET(req) {
+export async function GET() {
   try {
-    const { postId } = req.query;
-    const comments = await Comment.find({ postId });
-    return NextResponse.json({ comments }, { status: 200 });
+    const comment = await Comment.find()
+    return NextResponse.json({ comment }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Error fetching comments', error: err }, { status: 500 });
