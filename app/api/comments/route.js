@@ -1,5 +1,6 @@
 import Comment from '../../../models/Comment';
 import Post from '../../../models/Post';
+import User from '../../../models/User';
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
@@ -23,7 +24,7 @@ export async function POST(req) {
 
 export async function GET() {
   try {
-    const comment = await Comment.find()
+    const comment = await Comment.find().populate('author').exec();
     return NextResponse.json({ comment }, { status: 200 });
   } catch (err) {
     console.error(err);

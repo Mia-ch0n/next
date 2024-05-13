@@ -7,10 +7,7 @@ const commentSchema = new Schema({
     type: String,
     required: false,
   },
-  author: {
-    type: String,
-    required: false,
-  },
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
   timestamp: {
     type: Date,
     default: Date.now,
