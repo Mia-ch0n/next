@@ -7,17 +7,23 @@ export async function GET({ params }) {
   return NextResponse.json({ foundPost }, { status: 200 });
 }
 
-export async function PUT({ params, req }) {
+export async function PUT(req, { params}) {
+
   try {
     const { id } = params;
     const body = await req.json();
-    const updatedPost = await Post.findByIdAndUpdate(id, body);
+    const updatedPost = await Post.findOneAndUpdate({ _id: id }, body, {
+      new: true,
+      runValidators: true,
+    });
+
     return NextResponse.json({ updatedPost }, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }
+
 export async function DELETE(req, { params }) {
   try {
     const { id } = params;

@@ -1,13 +1,24 @@
-import { faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-export const up = ({ onPress, count }) => {
+import { faThumbsUp as faThumbsUpRegular } from "@fortawesome/free-regular-svg-icons";
+import { faThumbsUp as faThumbsUpSolid } from "@fortawesome/free-solid-svg-icons";
+
+const Up = ({ onPress, count }) => {
+  const [liked, setLiked] = useState(false);
+
+  const handlePress = () => {
+    onPress();
+    setLiked((prevLiked) => !prevLiked);
+  };
+
   return (
     <div>
-      <a onClick={onPress}>
-      <FontAwesomeIcon icon={faThumbsUp} />
+      <a onClick={handlePress}>
+        {liked ? <FontAwesomeIcon icon={faThumbsUpSolid} /> : <FontAwesomeIcon icon={faThumbsUpRegular} />}
       </a>
       <span>{count}</span>
     </div>
   );
 };
-export default up;
+
+export default Up;

@@ -5,8 +5,9 @@ import { useEffect } from "react";
 export default function Comment({ postID }) {
   const [comment, setComment] = useState("");
   const [userInfo, setUserInfo] = useState(null);
-  const { data: session } = useSession();
+  const { data: session, } = useSession();
   useEffect(() => {
+
     const fetchUserInfo = async () => {
       try {
         const response = await fetch("/api/user", {
@@ -16,6 +17,7 @@ export default function Comment({ postID }) {
           },
           body: JSON.stringify({ email: session.user.email }),
         });
+
         if (response.ok) {
           const data = await response.json();
           setUserInfo(data.user);
@@ -31,13 +33,14 @@ export default function Comment({ postID }) {
       fetchUserInfo();
     }
   }, [session]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log("post ", postID);
       const response = await fetch("/api/comments", {
         method: "POST",
-        body: JSON.stringify({ text: comment, post: postID }),
+        body: JSON.stringify({ text: comment, post: postID,author:userInfo._id }),
         //@ts-ignore
         "Content-Type": "application/json",
       });

@@ -1,6 +1,6 @@
-'use client'
-import { Fragment, useRef, useState, useEffect } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+"use client";
+import { Fragment, useRef, useState, useEffect } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 export default function EditPostPopup({ postData }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     if (postData) {
-      setTitle(postData.title || '');
-      setDescription(postData.description || '');
+      setTitle(postData.title || "");
+      setDescription(postData.description || "");
     }
   }, [postData]);
 
@@ -29,9 +29,9 @@ export default function EditPostPopup({ postData }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'title') {
+    if (name === "title") {
       setTitle(value);
-    } else if (name === 'description') {
+    } else if (name === "description") {
       setDescription(value);
     }
   };
@@ -40,27 +40,31 @@ export default function EditPostPopup({ postData }) {
     e.preventDefault();
     try {
       const response = await fetch(`/api/posts/${postData._id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ title, description }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       if (response.ok) {
-        console.log('Post updated successfully!');
+        console.log("Post updated successfully!");
         closePopup();
-        router.reload(); 
+        router.refresh();
       } else {
-        console.error('Failed to update post:', response.statusText);
+        console.error("Failed to update post:", response.statusText);
       }
     } catch (error) {
-      console.error('Error updating post:', error);
+      console.error("Error updating post:", error);
     }
   };
 
   return (
     <>
-      <FontAwesomeIcon icon={faPenToSquare} className="hover:cursor-pointer hover:text-green-200" onClick={openPopup} />
+      <FontAwesomeIcon
+        icon={faPenToSquare}
+        className="hover:cursor-pointer hover:text-green-200"
+        onClick={openPopup}
+      />
 
       <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -82,7 +86,10 @@ export default function EditPostPopup({ postData }) {
               <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
             </Transition.Child>
 
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
               &#8203;
             </span>
             <Transition.Child
@@ -98,7 +105,10 @@ export default function EditPostPopup({ postData }) {
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                      <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="title"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Title
                       </label>
                       <input
@@ -112,7 +122,10 @@ export default function EditPostPopup({ postData }) {
                       />
                     </div>
                     <div className="mb-4">
-                      <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="description"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Description
                       </label>
                       <textarea

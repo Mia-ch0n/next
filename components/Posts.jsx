@@ -6,10 +6,9 @@ import Delete from "./Delete";
 import Up from "../components/Up";
 import Down from "../components/Down";
 // import Com from "../components/Com";
-import Edit from './Edit';
+import Edit from "./Edit";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -17,9 +16,9 @@ export default function Posts() {
   const router = useRouter();
   const [upvotes, setUpvote] = useState([]);
   const [downvotes, setDownvote] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
+  // const [comments, setComments] = useState([]);
+  // const [showEditForm, setShowEditForm] = useState(false);
+  // const [selectedPost, setSelectedPost] = useState(null);
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -38,24 +37,24 @@ export default function Posts() {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-    async function fetchComments() {
-      try {
-        const response = await fetch("/api/comments");
-        if (response.ok) {
-          const data = await response.json();
+  // useEffect(() => {
+  //   async function fetchComments() {
+  //     try {
+  //       const response = await fetch("/api/comments");
+  //       if (response.ok) {
+  //         const data = await response.json();
 
-          setComments(data.comments);
-        } else {
-          console.error("Failed to fetch comments:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    }
-    fetchComments();
-  }, []);
-  
+  //         setComments(data.comments);
+  //       } else {
+  //         console.error("Failed to fetch comments:", response.statusText);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching comments:", error);
+  //     }
+  //   }
+  //   fetchComments();
+  // }, []);
+
   // const handleEditClick = (post) => {
   //   setSelectedPost(post);
   //   setShowEditForm(true);
@@ -66,25 +65,6 @@ export default function Posts() {
     return new Date(timestamp).toLocaleDateString();
   };
   const [showAllComments, setShowAllComments] = useState(false);
-  const handleVote = (isUp) => {
-    if (isUp) {
-      //upvote logic
-      if (upvotes.includes(user.email)) {
-        let res = upvotes.filter((ids) => ids != user.email);
-        setUpvote(res);
-      } else {
-        setUpvote((prevState) => [...prevState, user.email]);
-      }
-    } else {
-      //dowvote logic
-      if (downvotes.includes(user.email)) {
-        let res = downvotes.filter((ids) => ids !== user.email);
-        setDownvote(res);
-      } else {
-        setDownvote((prevState) => [...prevState, user.email]);
-      }
-    }
-  };
 
   return (
     <div className="">
@@ -98,24 +78,26 @@ export default function Posts() {
               >
                 <div className="flex items-end justify-end w-full gap-x-4">
                   <Up
+                    id={post._id}
                     count={upvotes.length}
                     onPress={() => {
-                      handleVote(true);
+                      handleVote(true, post._id);
                     }}
                   />
                   <Down
+                    id={post._id}
                     count={downvotes.length}
                     onPress={() => {
                       handleVote(false);
                     }}
                   />
-
+<PostComponent/>
                   {user?.email === post.author.email && (
                     <Delete id={post._id} />
                   )}
                   {user?.email === post.author.email && (
-                <Edit postData={selectedPost} />
-              )}
+                    <Edit postData={post} />
+                  )}
                 </div>
                 <div className="group relative w-full">
                   <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
@@ -154,36 +136,12 @@ export default function Posts() {
                   {post.comments
                     .slice(0, showAllComments ? undefined : 3)
                     .map((comment) => (
-                      <div className="relative pb-8" key={comment._id}>
-                        <span
-                          className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200"
-                          aria-hidden="true"
-                        />
-                        <div className="relative flex items-start space-x-3">
-                          <>
-                            <div className="relative">
-                              {comment.author && comment.author.profilePic && (
-                                <img
-                                  className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400 ring-8 ring-white"
-                                  src={comment.author.profilePic}
-                                  alt=""
-                                />
-                              )}
-                              <span className="absolute -bottom-0.5 -right-1 rounded-tl bg-white px-0.5 py-px">
-                                <ChatBubbleLeftEllipsisIcon
-                                  className="h-5 w-5 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="mt-2 text-sm text-gray-700">
-                                <p>{comment.text}</p>
-                              </div>
-                            </div>
-                          </>
-                        </div>
-                      </div>
+                      <CommentsComponent
+                        comment={comment}
+                        post={post}
+                        posts={posts}
+                        user={user}
+                      />
                     ))}
                   <button
                     onClick={() => setShowAllComments(!showAllComments)}
@@ -200,3 +158,85 @@ export default function Posts() {
     </div>
   );
 }
+
+const CommentsComponent = ({ comment, post ,posts,user}) => {
+  
+  const [upvotes, setUpvote] = useState([]);
+  const [downvotes, setDownvote] = useState([]);
+
+  const handleVote = (isUp, postID) => {
+    let PostData = posts.find((item) => item._id == postID);
+    if (isUp) {
+      //upvote logic
+      if (upvotes.includes(user.email)) {
+        //-1
+        let res = upvotes.filter((ids) => ids != user.email);
+        setUpvote(res);
+      } else {
+        //+1
+        setUpvote((prevState) => [...prevState, user.email]);
+      }
+    } else {
+      //dowvote logic
+      if (downvotes.includes(user.email)) {
+        let res = downvotes.filter((ids) => ids !== user.email);
+        setDownvote(res);
+      } else {
+        setDownvote((prevState) => [...prevState, user.email]);
+      }
+    }
+  };
+
+  return (
+    <div className="relative pb-8" key={comment._id}>
+      <span
+        className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200"
+        aria-hidden="true"
+      />
+      <b>{comment.author?.fullName}</b>
+      <div className="relative flex items-start space-x-3">
+        <>
+          <div className="relative">
+            {comment.author && comment.author.profilePic && (
+              <img
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400 ring-8 ring-white"
+                src={comment.author.profilePic}
+                alt=""
+              />
+            )}
+            <span className="absolute -bottom-0.5 -right-1 rounded-tl bg-white px-0.5 py-px">
+              <ChatBubbleLeftEllipsisIcon
+                className="h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="mt-2 text-sm text-gray-700">
+              <p>{comment.text}</p>
+            </div>
+            <div className="flex items-end justify-end w-full gap-x-4">
+              <Up
+                // id={post._id}
+               count={upvotes.length}
+                onPress={() => {
+                  handleVote(true);
+                }}
+              />
+              <Down
+                id={post?._id}
+                count={downvotes.length}
+                onPress={() => {
+                  handleVote(false);
+                }}
+              />
+            </div>
+          </div>
+        </>
+      </div>
+    </div>
+  );
+};
+const PostComponent = ({ user }) => {
+
+};
