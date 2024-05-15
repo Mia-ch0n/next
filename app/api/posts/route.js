@@ -16,7 +16,6 @@ export async function POST(req) {
     const body = await req.json();
     console.log("API post ",body);
     await Post.create(body);
-  
     return NextResponse.json({ message: "Post Created" }, { status: 201 });
   } catch (err) {
     console.log(err);

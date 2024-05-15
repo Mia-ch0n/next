@@ -4,8 +4,7 @@ import User from "@models/User";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {
-};
+export const authOptions = {};
 
 const handler = NextAuth({
   providers: [
@@ -27,11 +26,10 @@ const handler = NextAuth({
           if (!passwordsMatch) {
             return null;
           }
-          const isAdmin = user.hasOwnProperty('isAdmin') && user.isAdmin;
-          const role = isAdmin ? 'admin' : 'user';
+          const isAdmin = user.hasOwnProperty("isAdmin") && user.isAdmin;
+          const role = isAdmin ? "admin" : "user";
           // step  0
-          return { email: user.email, role: role}
-
+          return { email: user.email, role: role };
         } catch (error) {
           console.log("Error: ", error);
         }
@@ -41,31 +39,26 @@ const handler = NextAuth({
   callbacks: {
     // step 1
     jwt({ token, user }) {
-      if (user) token.role = user.role
-      return token
+      if (user) token.role = user.role;
+      console.log({ token });
+      return token;
     }, // step 2
     async session({ session, token, user }) {
-      // Send properties to the client, like an access_token and user id from a provider.
-      // console.log({ session, token, user });
-      // session.accessToken = token.accessToken
-      session.user.id = token.id
-      session.user.email = token.email
-      session.user.role = token.role
+      session.user.id = token.id;
+      session.user.email = token.email;
+      session.user.role = token.role;
 
-      return session
+      return session;
     },
-
   },
   pages: {
-    signIn: "/feed",
+    signIn: "/signIn",
     signOut: "signIn",
   },
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true
-
+  debug: true,
 });
 export { handler as GET, handler as POST };
-

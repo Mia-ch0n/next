@@ -31,7 +31,6 @@ export default function Comment({ postID }) {
       fetchUserInfo();
     }
   }, [session]);
-  //chnage thissss like in post and user rs
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

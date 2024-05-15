@@ -6,11 +6,10 @@ import Delete from "./Delete";
 import Up from "../components/Up";
 import Down from "../components/Down";
 // import Com from "../components/Com";
-//import Edit from './Edit';
+import Edit from './Edit';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-// import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
@@ -19,6 +18,8 @@ export default function Posts() {
   const [upvotes, setUpvote] = useState([]);
   const [downvotes, setDownvote] = useState([]);
   const [comments, setComments] = useState([]);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -36,7 +37,7 @@ export default function Posts() {
     }
     fetchPosts();
   }, []);
- 
+
   useEffect(() => {
     async function fetchComments() {
       try {
@@ -54,7 +55,11 @@ export default function Posts() {
     }
     fetchComments();
   }, []);
-
+  
+  // const handleEditClick = (post) => {
+  //   setSelectedPost(post);
+  //   setShowEditForm(true);
+  // };
 
   const formatCreatedAt = (id) => {
     const timestamp = parseInt(id.substring(0, 8), 16) * 1000;
@@ -87,30 +92,31 @@ export default function Posts() {
         <div className="mx-auto max-w-4xl  ">
           <div className=" border-t border-gray-200 pt-10 sm:mt-10 sm:pt-16 ">
             {posts.map((post) => (
-              <article 
+              <article
                 key={post._id}
                 className="flex flex-col items-start justify-between rounded-lg mb-6 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 px-10 mx-34 "
               >
                 <div className="flex items-end justify-end w-full gap-x-4">
-                  
-                    <Up
-                      count={upvotes.length}
-                      onPress={() => {
-                        handleVote(true);
-                      }}
-                    />
-                    <Down
-                      count={downvotes.length}
-                      onPress={() => {
-                        handleVote(false);
-                      }}
-                    />
-                 
+                  <Up
+                    count={upvotes.length}
+                    onPress={() => {
+                      handleVote(true);
+                    }}
+                  />
+                  <Down
+                    count={downvotes.length}
+                    onPress={() => {
+                      handleVote(false);
+                    }}
+                  />
+
                   {user?.email === post.author.email && (
                     <Delete id={post._id} />
                   )}
+                  {user?.email === post.author.email && (
+                <Edit postData={selectedPost} />
+              )}
                 </div>
-
                 <div className="group relative w-full">
                   <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <span className="absolute inset-0" />
@@ -124,7 +130,6 @@ export default function Posts() {
                   <p className="mt-5 line-clamp-3 text-xl leading-6 text-gray-600">
                     {post.description}
                   </p>
-                  
                 </div>
                 <div className="relative mt-8 flex items-center gap-x-4">
                   <img
@@ -140,13 +145,15 @@ export default function Posts() {
                     <p className="text-gray-600">{post?.author?.job}</p>
                   </div>
                 </div>
-                
-                  <div className="w-[500px]">
-                    <Comment postID={post._id} />
 
-                    {/*<Com/>*/}
+                <div className="w-[500px]">
+                  <Comment postID={post._id} />
 
-                    {post.comments.slice(0, showAllComments ? undefined : 3).map((comment) => (
+                  {/*<Com/>*/}
+
+                  {post.comments
+                    .slice(0, showAllComments ? undefined : 3)
+                    .map((comment) => (
                       <div className="relative pb-8" key={comment._id}>
                         <span
                           className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200"
@@ -172,17 +179,19 @@ export default function Posts() {
                             <div className="min-w-0 flex-1">
                               <div className="mt-2 text-sm text-gray-700">
                                 <p>{comment.text}</p>
-                              </div>  
+                              </div>
                             </div>
                           </>
                         </div>
                       </div>
                     ))}
-                    <button onClick={() => setShowAllComments(!showAllComments)} className="text-sm text-gray-700 bg-gray-200 rounded-full mt-6">
-                  <span>{showAllComments ? "See less" : "See more"}</span>
-                </button>
-                  </div>
-               
+                  <button
+                    onClick={() => setShowAllComments(!showAllComments)}
+                    className="text-sm text-gray-700 bg-gray-200 rounded-full mt-6"
+                  >
+                    <span>{showAllComments ? "See less" : "See more"}</span>
+                  </button>
+                </div>
               </article>
             ))}
           </div>
