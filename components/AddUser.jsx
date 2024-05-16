@@ -1,49 +1,46 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 export default function AddUser() {
-    const [open, setOpen] = useState(true);
-    const [formData, setFormData] = useState({
-      username: "",
-      email: "",
-      password: ""
+  const [open, setOpen] = useState(true);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const cancelButtonRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+const handleSubmit = async () => {
+  try {
+    const response = await fetch("/api/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData), 
     });
-  
-    const cancelButtonRef = useRef(null);
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value
-      }));
-    };
-  
-    const handleSubmit = async () => {
-      try {
-        const response = await fetch("/api/user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email: formData.email })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log("User created:", data.user);
-          setOpen(false); 
-        } else {
-          const error = await response.json();
-          console.error("Error creating user:", error.message);
-   
-        }
-      } catch (error) {
-        console.error("Error creating user:", error);
-        
-      }
-    };
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("User created:", data.user);
+      setOpen(false);
+    } else {
+      const error = await response.json();
+      console.error("Error creating user:", error.message);
+    }
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+};
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,7 +75,6 @@ export default function AddUser() {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                   
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title
                         as="h3"
@@ -87,7 +83,7 @@ export default function AddUser() {
                         Add User
                       </Dialog.Title>
                       <div className="mt-2">
-                        <form>
+                        <form method="post">
                           <div className="sm:col-span-4">
                             <label
                               htmlFor="username"
@@ -101,46 +97,47 @@ export default function AddUser() {
                                   type="text"
                                   name="username"
                                   id="username"
-                                  autoComplete="username"
+                                  value={formData.username}
+                                  onChange={handleChange}
+                                 
                                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                  
                                 />
                               </div>
                             </div>
                             <label
-                              htmlFor="username"
+                              htmlFor="email"
                               className="block text-sm font-medium leading-6 text-gray-900"
                             >
                               email
                             </label>
                             <div className="mt-2">
                               <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                                
                                 <input
                                   type="email"
                                   name="email"
                                   id="email"
-                                  autoComplete="email"
+                                  value={formData.email}
+                                  onChange={handleChange}
+                                
                                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                  
                                 />
                               </div>
                             </div>
                             <label
-                              htmlFor="username"
+                              htmlFor="password"
                               className="block text-sm font-medium leading-6 text-gray-900"
                             >
-                             Password
+                              Password
                             </label>
                             <div className="mt-2">
                               <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                                 <input
-                                  type="Password"
-                                  name="Password"
-                                  id="Password"
-                                  autoComplete="Password"
+                                  type="password"
+                                  name="password"
+                                  id="password"
+                                  value={formData.password}
+                                  onChange={handleChange}
                                   className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                  
                                 />
                               </div>
                             </div>
@@ -151,21 +148,21 @@ export default function AddUser() {
                   </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                <button
-                type="button"
-                className="inline-flex w-full justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                onClick={handleSubmit}
-              >
-                Add User
-              </button>
-              <button
-                type="button"
-                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                onClick={() => setOpen(false)}
-                ref={cancelButtonRef}
-              >
-                Cancel
-              </button>
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    onClick={handleSubmit}
+                  >
+                    Add User
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                    onClick={() => setOpen(false)}
+                    ref={cancelButtonRef}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

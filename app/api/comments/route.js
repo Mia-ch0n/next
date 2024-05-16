@@ -21,11 +21,9 @@ export async function POST(req) {
     return NextResponse.json({ message: 'Error creating comment', error: err }, { status: 500 });
   }
 }
-
-
 export async function GET() {
   try {
-    const comment = await Comment.find().populate('author').exec();
+    const comment = await Comment.find().sort({ _id: -1 }).populate('author').exec();
     return NextResponse.json({ comment }, { status: 200 });
   } catch (err) {
     console.error(err);

@@ -14,6 +14,7 @@ export default function Comment({ postID }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            
           },
           body: JSON.stringify({ email: session.user.email }),
         });

@@ -22,7 +22,7 @@ export default function Posts() {
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const response = await fetch("/api/posts");
+        const response = await fetch("http://localhost:3000/api/posts",{cache: 'no-store'});
         if (response.ok) {
           const data = await response.json();
 

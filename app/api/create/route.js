@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { email, password } = await req.json();
+    const { email, password,fullName } = await req.json();
 
-    // Create the user
-    const user = await User.create({ email, password });
+   
+    const user = await User.create({ email, password, fullName });
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (err) {

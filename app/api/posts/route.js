@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const posts = await Post.find()
+    const posts = await Post.find().sort({ _id: -1 })
       .populate("author")
       .populate("comments")
       .populate({
@@ -24,7 +24,7 @@ export async function GET() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    console.log("API post ", body);
+    // console.log("API post ", body);
     await Post.create(body);
     return NextResponse.json({ message: "Post Created" }, { status: 201 });
   } catch (err) {
