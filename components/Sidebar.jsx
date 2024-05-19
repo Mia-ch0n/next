@@ -24,7 +24,7 @@ import {
 } from "@heroicons/react/20/solid";
 
 const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
+  { name: "Home", href: "feed", icon: HomeIcon, current: true },
   {
     name: "Your Profile",
     href: "/UserProfile",

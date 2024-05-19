@@ -4,8 +4,6 @@ import User from "@models/User";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {};
-
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
@@ -26,24 +24,27 @@ const handler = NextAuth({
           if (!passwordsMatch) {
             return null;
           }
-          const isAdmin = user.hasOwnProperty("isAdmin") && user.isAdmin;
-          const role = isAdmin ? "admin" : "user";
-          // step  0
-          return { email: user.email, role: role };
+          const isAdmin = user.isAdmin || false;
+          const isSuperAdmin = user.isSuperAdmin || false;
+          const role = isSuperAdmin ? "superadmin" : isAdmin ? "admin" : "user";
+
+          return { email: user.email, role: role, id: user._id };
         } catch (error) {
           console.log("Error: ", error);
+          return null;
         }
       },
     }),
   ],
   callbacks: {
-    // step 1
     jwt({ token, user }) {
-      if (user) token.role = user.role;
-      console.log({ token });
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+      }
       return token;
-    }, // step 2
-    async session({ session, token, user }) {
+    },
+    async session({ session, token }) {
       session.user.id = token.id;
       session.user.email = token.email;
       session.user.role = token.role;
@@ -61,4 +62,5 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
 });
+
 export { handler as GET, handler as POST };

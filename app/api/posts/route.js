@@ -1,3 +1,4 @@
+import "@models/Comment";
 import Post from "../../../models/Post";
 import { NextResponse } from "next/server";
 

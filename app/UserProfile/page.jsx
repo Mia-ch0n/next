@@ -97,7 +97,7 @@ const Profile = () => {
   }, [session]);
   return (
     <>
-      <div>
+      <div className="block w-screen">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"

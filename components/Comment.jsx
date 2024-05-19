@@ -44,6 +44,7 @@ export default function Comment({ postID }) {
         body: JSON.stringify({ text: comment, post: postID,author:userInfo._id }),
         //@ts-ignore
         "Content-Type": "application/json",
+        cache: "no-store",
       });
       if (response.ok) {
         setComment("");
@@ -63,7 +64,7 @@ export default function Comment({ postID }) {
       <img
         src={userInfo.profilePic}
         alt=""
-        className="h-6 w-6 flex-none rounded-full bg-gray-50"
+        className="h-6 w-6 flex-none rounded-full "
       />
     )}
       <form

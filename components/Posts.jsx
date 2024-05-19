@@ -16,13 +16,14 @@ export default function Posts() {
   const router = useRouter();
   const [upvotes, setUpvote] = useState([]);
   const [downvotes, setDownvote] = useState([]);
-  // const [comments, setComments] = useState([]);
-  // const [showEditForm, setShowEditForm] = useState(false);
-  // const [selectedPost, setSelectedPost] = useState(null);
+
+  
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const response = await fetch("http://localhost:3000/api/posts",{cache: 'no-store'});
+        const response = await fetch("/api/posts", {
+          cache: "no-store",
+        });
         if (response.ok) {
           const data = await response.json();
 
@@ -36,29 +37,6 @@ export default function Posts() {
     }
     fetchPosts();
   }, []);
-
-  // useEffect(() => {
-  //   async function fetchComments() {
-  //     try {
-  //       const response = await fetch("/api/comments");
-  //       if (response.ok) {
-  //         const data = await response.json();
-
-  //         setComments(data.comments);
-  //       } else {
-  //         console.error("Failed to fetch comments:", response.statusText);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching comments:", error);
-  //     }
-  //   }
-  //   fetchComments();
-  // }, []);
-
-  // const handleEditClick = (post) => {
-  //   setSelectedPost(post);
-  //   setShowEditForm(true);
-  // };
 
   const formatCreatedAt = (id) => {
     const timestamp = parseInt(id.substring(0, 8), 16) * 1000;
@@ -91,7 +69,7 @@ export default function Posts() {
                       handleVote(false);
                     }}
                   />
-<PostComponent/>
+                  <PostComponent />
                   {user?.email === post.author.email && (
                     <Delete id={post._id} />
                   )}
@@ -159,8 +137,7 @@ export default function Posts() {
   );
 }
 
-const CommentsComponent = ({ comment, post ,posts,user}) => {
-  
+const CommentsComponent = ({ comment, post, posts, user }) => {
   const [upvotes, setUpvote] = useState([]);
   const [downvotes, setDownvote] = useState([]);
 
@@ -190,7 +167,7 @@ const CommentsComponent = ({ comment, post ,posts,user}) => {
   return (
     <div className="relative pb-8" key={comment._id}>
       <span
-        className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200"
+        className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200 "
         aria-hidden="true"
       />
       <b>{comment.author?.fullName}</b>
@@ -199,14 +176,14 @@ const CommentsComponent = ({ comment, post ,posts,user}) => {
           <div className="relative">
             {comment.author && comment.author.profilePic && (
               <img
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400 ring-8 ring-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full "
                 src={comment.author.profilePic}
                 alt=""
               />
             )}
-            <span className="absolute -bottom-0.5 -right-1 rounded-tl bg-white px-0.5 py-px">
+            <span className="absolute -bottom-0.5 -right-1 rounded-tl bg-gray-100/80 px-0.5 py-px">
               <ChatBubbleLeftEllipsisIcon
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-black-400"
                 aria-hidden="true"
               />
             </span>
@@ -218,7 +195,7 @@ const CommentsComponent = ({ comment, post ,posts,user}) => {
             <div className="flex items-end justify-end w-full gap-x-4">
               <Up
                 // id={post._id}
-               count={upvotes.length}
+                count={upvotes.length}
                 onPress={() => {
                   handleVote(true);
                 }}
@@ -238,5 +215,5 @@ const CommentsComponent = ({ comment, post ,posts,user}) => {
   );
 };
 const PostComponent = ({ user }) => {
-
+  
 };

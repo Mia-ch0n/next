@@ -19,7 +19,18 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    fullName: String,
+    isSuperAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    fullName: {
+        type: String,
+        required: true,
+    },
+    cetegory: {
+        type: String,
+        required: false,
+    },
     job: String,
     profilePic: String,
     forgotPasswordToken: String,

@@ -13,50 +13,55 @@ export default function SignIn() {
   const { data: session, status } = useSession();
 
   const handleSubmit = async (e) => {
-
-    const getUser =  () => {
-       return new Promise(async(resolve, reject) => {
-        const res = await fetch('/api/user', {
-          method: "POST",
-          body: JSON.stringify({ email }),
-          //@ts-ignore
-          "Content-Type": "application/json",
-        })
-        await res.json().then(res1=>{
-            resolve(res1.user)
-        })
-       })
-      
-    }
-
     e.preventDefault();
+
+    const getUser = async () => {
+      const res = await fetch('/api/user', {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        return data.user;
+      } else {
+        throw new Error("Failed to fetch user data");
+      }
+    };
+
     try {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: false, // Prevent default redirection by NextAuth
+        redirect: false,
       });
 
-      console.log("sigin: ", res);
       if (res.error) {
-        throw res.error;
+        throw new Error(res.error);
       }
-      const user = await getUser()
- 
-      if (user?.isAdmin) {
+
+      const user = await getUser();
+
+      if (user.isSuperAdmin) {
+        router.replace("/SuperAdmin");
+      } else if (user.isAdmin) {
         router.replace("/AdminDash");
       } else {
         router.replace("/feed");
       }
     } catch (error) {
-      console.log(error);
       setError("Invalid Credentials");
     }
   };
+
   const isSignInPage = true;
+
   return (
     <>
-      <Nav isSignInPage={isSignInPage}/>
+      <Nav isSignInPage={isSignInPage} />
       <div className="flex flex-1 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 pt-5 pb-20 mt-10">
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm lg:w-96 ">
@@ -157,4 +162,3 @@ export default function SignIn() {
     </>
   );
 }
-

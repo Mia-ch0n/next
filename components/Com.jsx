@@ -43,7 +43,7 @@ const Com = () => {
                           alt=""
                         />
                       )}
-                      <span className="absolute -bottom-0.5 -right-1 rounded-tl bg-white px-0.5 py-px">
+                      <span className="absolute -bottom-0.5 -right-1 rounded-tl  px-0.5 py-px">
                         <ChatBubbleLeftEllipsisIcon
                           className="h-5 w-5 text-gray-400"
                           aria-hidden="true"

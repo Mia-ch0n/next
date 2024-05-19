@@ -8,6 +8,8 @@ import AddUser from "../../components/AddUser";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import DelUser from"../../components/DelUser"
+import EditUser from"../../components/EditUser"
 import {
   ChartBarSquareIcon,
   Cog6ToothIcon,
@@ -29,7 +31,7 @@ const navigation = [
     icon: PuzzlePieceIcon,
     current: false,
   },
-  { name: "Settings", href: "#", icon: Cog6ToothIcon, current: false },
+  { name: "Profile", href: "UserProfile", icon: Cog6ToothIcon, current: false },
 ];
 const secondaryNavigation = [
   { name: "Overview", href: "#", current: true },
@@ -47,24 +49,21 @@ const userNavigation = [
   { name: "Your profile", href: "/UserProfile" },
   { name: "Sign out", onClick: signOut },
 ];
-const statuses = {
-  Completed: "text-green-400 bg-green-400/10",
-  Error: "text-rose-400 bg-rose-400/10",
-};
-const activityItems = [
-  {
-    user: {
-      name: "Michael Foster",
-      imageUrl:
-        "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-    commit: "10",
-    branch: "answers",
-    status: "4",
-    ups: "20",
-    downs: "20",
-  },
-];
+
+// const activityItems = [
+//   {
+//     // user: {
+//     //   name: "Michael Foster",
+//     //   imageUrl:
+//     //     "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+//     // },
+//     commit: "10",
+//     branch: "answers",
+//     status: "4",
+//     ups: "20",
+//     downs: "20",
+//   },
+// ];
 
 
 function classNames(...classes) {
@@ -115,11 +114,29 @@ const { data: session } = useSession();
       fetchUserInfo();
     }
   }, [session]);
-  
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data.users);
+        } else {
+          console.error("Failed to fetch users");
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
   return (
     
     <>
-      <div className="block w-screen ">
+      <div className="block w-screen">
         {/* Static sidebar for desktop */}
         <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
@@ -277,12 +294,16 @@ const { data: session } = useSession();
                     <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div>
+                    
+                    {userInfo && (
                     <h1 className="flex gap-x-3 text-base leading-7 ">
                       <span className="font-semibold text-grey">
-                        Admin dashboard
+                      {userInfo.cetegory}Manager Dashboard
                       </span>
                     </h1>
+                  )}
                   </div>
+                  
                   {userInfo && (
                   <p className="mt-2 text-xs leading-6 text-gray-400">
                     Hey <span className="text-gray-900">{userInfo.fullName}</span> u can track user s activity here
@@ -374,61 +395,75 @@ const { data: session } = useSession();
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5">
-                  {activityItems.map((item) => (
-                    <tr key={item.commit}>
+                {users.map((user, index) => {
+                  // const activityItem = activityItems.find(item => item.userId === user._id);
+                  return (
+                    <tr key={user._id}>
                       <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
                         <div className="flex items-center gap-x-4">
                           <img
-                            src={item.user.imageUrl}
-                            alt=""
+                            src={user.profilePic}
+                            alt={user.fullName}
                             className="h-8 w-8 rounded-full bg-gray-800"
                           />
                           <div className="truncate text-sm font-medium leading-6 text-grey">
-                            {item.user.name}
+                            {user.fullName}
                           </div>
                         </div>
                       </td>
-                      <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-                        <div className="flex gap-x-3">
-                          <div className="font-mono text-sm leading-6 text-gray-400">
-                            {item.commit}
-                          </div>
-                          <span className="inline-flex items-center rounded-md bg-gray-400/10 px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-gray-400/20">
-                            {item.branch}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-                        <div className="flex items-center justify-end gap-x-2 sm:justify-start">
-                          <div
-                            className={classNames(
-                              statuses[item.status],
-                              "flex-none rounded-full p-1"
-                            )}
-                          >
-                            <div className="h-1.5 w-1.5 rounded-full bg-current" />
-                          </div>
-                          <div className="hidden text-grey sm:block">
-                            {item.status}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                        {item.ups}
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                        {item.downs}
-                      </td>
-
+                      
+                        <>
+                          <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                            <div className="flex gap-x-3">
+                              <div className="font-mono text-sm leading-6 text-gray-400">
+                      {/*activityItem.commit*/}
+                              </div>
+                        
+                                {/*activityItem.branch*/}
+                           
+                            </div>
+                          </td>
+                          <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                            <div className="flex items-center justify-end gap-x-2 sm:justify-start">
+                              <div
+                                // className={classNames(
+                                //   statuses[activityItem.status],
+                                //   "flex-none rounded-full p-1"
+                                // )}
+                              >
+                                <div className="h-1.5 w-1.5 " />
+                              </div>
+                              <div className="hidden text-grey sm:block">
+                                {/*activityItem.status*/}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                            {/*activityItem.ups*/}
+                          </td>
+                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                            {/*activityItem.downs*/}
+                          </td>
+                        </>
+                      
+                        <>
+                          <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8"></td>
+                          <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20"></td>
+                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"></td>
+                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"></td>
+                        </>
+                      
                       <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-8">
-                        <button>delete</button>
+                        <DelUser id={user._id} />
                       </td>
                       <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                        <button>edit</button>
+                        <EditUser userData={user} />
                       </td>
                     </tr>
-                  ))}
-                </tbody>
+                  );
+                })}
+              </tbody>
+              
               </table>
             </div>
           </div>
