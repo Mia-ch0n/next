@@ -27,11 +27,16 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    cetegory: {
+    job: {
         type: String,
-        required: false,
+        required: true,
     },
-    job: String,
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'mobile', 'Devops'], default: 'mobile' 
+    },
+  
     profilePic: String,
     forgotPasswordToken: String,
     forgotPasswordTokenExpiry: Date,

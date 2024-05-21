@@ -8,8 +8,8 @@ import AddUser from "../../components/AddUser";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import DelUser from"../../components/DelUser"
-import EditUser from"../../components/EditUser"
+import DelUser from "../../components/DelUser";
+import EditUser from "../../components/EditUser";
 import {
   ChartBarSquareIcon,
   Cog6ToothIcon,
@@ -50,28 +50,11 @@ const userNavigation = [
   { name: "Sign out", onClick: signOut },
 ];
 
-// const activityItems = [
-//   {
-//     // user: {
-//     //   name: "Michael Foster",
-//     //   imageUrl:
-//     //     "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-//     // },
-//     commit: "10",
-//     branch: "answers",
-//     status: "4",
-//     ups: "20",
-//     downs: "20",
-//   },
-// ];
-
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function dashboard() {
-  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false });
@@ -88,7 +71,7 @@ export default function dashboard() {
     setShowModal((prevShowModal) => !prevShowModal);
   };
   const [userInfo, setUserInfo] = useState(null);
-const { data: session } = useSession();
+  const { data: session } = useSession();
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -109,7 +92,7 @@ const { data: session } = useSession();
         console.error("Error fetching user information:", error);
       }
     };
-  
+
     if (session) {
       fetchUserInfo();
     }
@@ -133,8 +116,14 @@ const { data: session } = useSession();
 
     fetchUsers();
   }, []);
+  const filteredUsers = users.filter(user => {
+    const userJob = user.job?.toLowerCase();
+    const userCategory = userInfo?.category?.toLowerCase();
+    return userJob && userCategory ? userJob.includes(userCategory) : false;
+  });
+  
+
   return (
-    
     <>
       <div className="block w-screen">
         {/* Static sidebar for desktop */}
@@ -213,57 +202,56 @@ const { data: session } = useSession();
               </form>
             </div>
             {userInfo && (
-            <Menu as="div" className="relative">
-              <Menu.Button className="-m-1.5 flex items-center p-1.5">
-                <span className="sr-only">Open user menu</span>
-                <img
-                  className="h-8 w-8 rounded-full bg-gray-50"
-                  src={userInfo.profilePic}
-                  alt=""
-                />
-                <span className="hidden lg:flex lg:items-center">
-                  <span
-                    className="ml-4 text-sm font-semibold leading-6 text-gray-400"
-                    aria-hidden="true"
-                  >
-                  {userInfo.fullName}
-                  </span>
-                  <ChevronDownIcon
-                    className="ml-2 h-5 w-5 text-gray-400"
-                    aria-hidden="true"
+              <Menu as="div" className="relative">
+                <Menu.Button className="-m-1.5 flex items-center p-1.5">
+                  <span className="sr-only">Open user menu</span>
+                  <img
+                    className="h-8 w-8 rounded-full bg-gray-50"
+                    src={userInfo.profilePic}
+                    alt=""
                   />
-                </span>
-               
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                  {userNavigation.map((item) => (
-                    <Menu.Item key={item.name}>
-                      {({ active }) => (
-                        <button
-                          onClick={handleSignOut}
-                          className={classNames(
-                            active ? "bg-gray-50" : "",
-                            "block px-3 py-1 text-sm leading-6 text-gray-900"
-                          )}
-                        >
-                          {item.name}
-                        </button>
-                      )}
-                    </Menu.Item>
-                  ))}
-                </Menu.Items>
-              </Transition>
-            </Menu>
-                )}
+                  <span className="hidden lg:flex lg:items-center">
+                    <span
+                      className="ml-4 text-sm font-semibold leading-6 text-gray-400"
+                      aria-hidden="true"
+                    >
+                      {userInfo.fullName}
+                    </span>
+                    <ChevronDownIcon
+                      className="ml-2 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Menu.Button>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                    {userNavigation.map((item) => (
+                      <Menu.Item key={item.name}>
+                        {({ active }) => (
+                          <button
+                            onClick={handleSignOut}
+                            className={classNames(
+                              active ? "bg-gray-50" : "",
+                              "block px-3 py-1 text-sm leading-6 text-gray-900"
+                            )}
+                          >
+                            {item.name}
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+            )}
           </div>
 
           <div className="">
@@ -294,24 +282,26 @@ const { data: session } = useSession();
                     <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
                       <div className="h-2 w-2 rounded-full bg-current" />
                     </div>
-                    
+
                     {userInfo && (
-                    <h1 className="flex gap-x-3 text-base leading-7 ">
-                      <span className="font-semibold text-grey">
-                      {userInfo.cetegory}Manager Dashboard
-                      </span>
-                    </h1>
-                  )}
+                      <h1 className="flex gap-x-3 text-base leading-7 ">
+                        <span className="font-semibold text-grey">
+                          {userInfo.category} Manager Dashboard
+                        </span>
+                      </h1>
+                    )}
                   </div>
-                  
+
                   {userInfo && (
-                  <p className="mt-2 text-xs leading-6 text-gray-400">
-                    Hey <span className="text-gray-900">{userInfo.fullName}</span> u can track user s activity here
-                  </p>
+                    <p className="mt-2 text-xs leading-6 text-gray-400">
+                      Hey{" "}
+                      <span className="text-gray-900">{userInfo.fullName}</span>{" "}
+                      u can track user s activity here
+                    </p>
                   )}
                 </div>
-                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none ">
-                  <button onClick={toggleModal}>Add User</button>
+                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1  font-semibold text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none px-6 pt-2 pb-2  ">
+                  <button onClick={toggleModal}>Add Collaborator</button>
                 </div>
               </div>
               {showModal && <AddUser onClose={toggleModal} />}
@@ -395,41 +385,40 @@ const { data: session } = useSession();
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5">
-                {users.map((user, index) => {
-                  // const activityItem = activityItems.find(item => item.userId === user._id);
-                  return (
-                    <tr key={user._id}>
-                      <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-                        <div className="flex items-center gap-x-4">
-                          <img
-                            src={user.profilePic}
-                            alt={user.fullName}
-                            className="h-8 w-8 rounded-full bg-gray-800"
-                          />
-                          <div className="truncate text-sm font-medium leading-6 text-grey">
-                            {user.fullName}
+                  {filteredUsers.map((user, index) => {
+                    // const activityItem = activityItems.find(item => item.userId === user._id);
+                    return (
+                      <tr key={user._id}>
+                        <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                          <div className="flex items-center gap-x-4">
+                            <img
+                              src={user.profilePic}
+                              alt={user.fullName}
+                              className="h-8 w-8 rounded-full bg-gray-800"
+                            />
+                            <div className="truncate text-sm font-medium leading-6 text-grey">
+                              {user.fullName}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      
+                        </td>
+
                         <>
                           <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
                             <div className="flex gap-x-3">
                               <div className="font-mono text-sm leading-6 text-gray-400">
-                      {/*activityItem.commit*/}
+                                {/*activityItem.commit*/}
                               </div>
-                        
-                                {/*activityItem.branch*/}
-                           
+
+                              {/*activityItem.branch*/}
                             </div>
                           </td>
                           <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
                             <div className="flex items-center justify-end gap-x-2 sm:justify-start">
                               <div
-                                // className={classNames(
-                                //   statuses[activityItem.status],
-                                //   "flex-none rounded-full p-1"
-                                // )}
+                              // className={classNames(
+                              //   statuses[activityItem.status],
+                              //   "flex-none rounded-full p-1"
+                              // )}
                               >
                                 <div className="h-1.5 w-1.5 " />
                               </div>
@@ -445,25 +434,24 @@ const { data: session } = useSession();
                             {/*activityItem.downs*/}
                           </td>
                         </>
-                      
+
                         <>
                           <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8"></td>
                           <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20"></td>
                           <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"></td>
                           <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"></td>
                         </>
-                      
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-8">
-                        <DelUser id={user._id} />
-                      </td>
-                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                        <EditUser userData={user} />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              
+
+                        <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-8">
+                          <DelUser id={user._id} />
+                        </td>
+                        <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
+                          <EditUser userData={user} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
           </div>

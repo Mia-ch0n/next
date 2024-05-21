@@ -60,7 +60,6 @@ export default  function createPost() {
         // clear the form fields
         setTitle('');
         setDescription('');
-        // Handle any other logic after successful submission
       } else {
         console.error('Failed to create post:', response.statusText);
       }
@@ -70,8 +69,6 @@ export default  function createPost() {
     router.refresh()
    
   };
-
-
   return (
     <div className="relative mx-20">
       <button

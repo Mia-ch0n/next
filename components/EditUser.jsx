@@ -43,7 +43,7 @@ export default function EditUserPopup({ userData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/create/${userData._id}", {
+      const response = await fetch(`/api/create/${userData._id}`, {
         method: "PUT",
         body: JSON.stringify({ fullName, email, password }),
         headers: {
@@ -53,7 +53,7 @@ export default function EditUserPopup({ userData }) {
       if (response.ok) {
         console.log("User updated successfully!");
         closePopup();
-        router.refresh;
+        router.refresh();
       } else {
         console.error("Failed to update user:", response.statusText);
       }

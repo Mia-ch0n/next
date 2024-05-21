@@ -22,7 +22,7 @@ export async function DELETE(req, { params }) {
 export async function PUT(req,{params}) {
   try {
     const { id } = params;
-    const updatedUserData = req.body.json();
+    const updatedUserData = await req.json();
 
     const updatedUser = await User.findByIdAndUpdate({_id: id}, updatedUserData, {
       new: true,

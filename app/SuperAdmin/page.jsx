@@ -47,20 +47,6 @@ const statuses = {
   Completed: "text-green-400 bg-green-400/10",
   Error: "text-rose-400 bg-rose-400/10",
 };
-// const activityItems = [
-//   {
-//     // user: {
-//     //   name: "Michael Foster",
-//     //   imageUrl:
-//     //     "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-//     // },
-//     commit: "10",
-//     branch: "answers",
-//     status: "4",
-//     ups: "20",
-//     downs: "20",
-//   },
-// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -259,33 +245,67 @@ export default function dashboard() {
               </Menu>
             )}
           </div>
-          <div className="flex items-end justify-end">
-            <button className=" mx-10 mt-10 bg-gray-700 text-white rounded-full pt-2 pb-2 px-4 font-semibold " onClick={toggleModal}>
-              Add Team Manager
-            </button>
-          </div>
+         
           {showModal && <AddUser onClose={toggleModal} />}
           <div className="">
             <div className="border-t border-grey/10 pt-11">
-              <h2 className="px-4 text-base font-semibold leading-7 text-grey sm:px-6 lg:px-8">
-                Team Managers
-              </h2>
-              <table className="mt-6 w-full greyspace-nowrap text-left  ">
+            <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
+            <div>
+              <div className="flex items-center gap-x-3">
+                <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
+                  <div className="h-2 w-2 rounded-full bg-current" />
+                </div>
+                
+                {userInfo && (
+                <h1 className="flex gap-x-3 text-base leading-7 ">
+                  <span className="font-semibold text-grey">
+                  {userInfo.category} Super Admin Dashboard
+                  </span>
+                </h1>
+              )}
+              </div>
+              
+              {userInfo && (
+              <p className="mt-2 text-xs leading-6 text-gray-400">
+                Hey <span className="text-gray-900">{userInfo.fullName}</span> u can add managers here 
+              </p>
+              )}
+            </div>
+            <div className="flex items-end justify-end">
+            <button className=" mx-10 mt-4 bg-gray-700 text-white rounded-full pt-2 pb-2 px-4 font-semibold " onClick={toggleModal}>
+              Add Team Manager
+            </button>
+          </div>
+          </div>
+          <table className="mt-6 w-full greyspace-nowrap text-left">
+          <colgroup>
+            <col className="w-full sm:w-4/12" />
+            <col className="lg:w-4/12" />
+            <col className="lg:w-2/12" />
+            <col className="lg:w-1/12" />
+            <col className="lg:w-1/12" />
+          </colgroup>
            
-                <thead className="border-b border-grey/10 text-sm leading-6 text-gray">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
-                    >
-                      User
-                    </th>
+              <thead className="border-b border-grey/10 text-sm leading-6 text-gray">
+              <tr>
+                <th
+                  scope="col"
+                  className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
+                >
+                  User
+                </th>
+                <th
+                  scope="col"
+                  className=" py-2 pl-4 pr-8 font-semibold sm:table-cell lg:pl-8"
+                >
+                  Job
+                </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5 ">
                 {users.map((user) => (
                   <tr key={user._id}>
-                    <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                    <td className="py-4 pl-4 sm:pl-6 ">
                       <div className="flex items-center gap-x-4">
                         <img
                           src={user.profilePic}
@@ -295,8 +315,18 @@ export default function dashboard() {
                         <div className="truncate text-sm font-medium leading-6 text-gray-800">
                           {user.fullName}
                         </div>
+                       
                       </div>
                     </td>
+                    <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                    <div className="flex gap-x-3">
+                    <div className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">
+                    {user.category}
+                  </div>
+
+                   
+                    </div>
+                  </td>
                     <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-800 md:table-cell lg:pr-8">
                       <div className="flex items-center justify-center gap-x-2">
                         <DelUser id={user._id} />
