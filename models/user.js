@@ -33,8 +33,8 @@ const userSchema = new Schema({
     },
     category: {
         type: String,
-        required: true,
-        enum: ['web', 'mobile', 'Devops'], default: 'mobile' 
+        required: false,
+       
     },
   
     profilePic: String,

@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import DelUser from "../../components/DelUser";
 import EditUser from "../../components/EditUser";
 import {
-  ChartBarSquareIcon,
   Cog6ToothIcon,
   PuzzlePieceIcon,
   SignalIcon,
@@ -66,12 +65,12 @@ export default function dashboard() {
     }
   };
   const [showModal, setShowModal] = useState(false);
-
   const toggleModal = () => {
     setShowModal((prevShowModal) => !prevShowModal);
   };
   const [userInfo, setUserInfo] = useState(null);
   const { data: session } = useSession();
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -97,8 +96,12 @@ export default function dashboard() {
       fetchUserInfo();
     }
   }, [session]);
-  const [users, setUsers] = useState([]);
 
+  const [users, setUsers] = useState([]);
+  const [postCount, setPostCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -116,12 +119,59 @@ export default function dashboard() {
 
     fetchUsers();
   }, []);
-  const filteredUsers = users.filter(user => {
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const response = await fetch("/api/posts", {
+          cache: "no-store",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.posts);
+          setPostCount(data.posts.length); 
+        } else {
+          console.error("Failed to fetch posts:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    }
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    async function fetchComment() {
+      try {
+        const response = await fetch("/api/comments", {
+          cache: "no-store",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setComments(data.comments);
+          setCommentCount(data.comments.length); 
+        } else {
+          console.error("Failed to fetch comments:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    }
+    fetchComment();
+  }, []);
+
+
+  const filteredUsers = users.filter((user) => {
     const userJob = user.job?.toLowerCase();
     const userCategory = userInfo?.category?.toLowerCase();
     return userJob && userCategory ? userJob.includes(userCategory) : false;
   });
-  
+
+
+  const questionCountByUser = users.reduce((acc, user) => {
+    acc[user._id] = posts.filter((post) => post.userId === user._id).length;
+    return acc;
+  }, {});
 
   return (
     <>
@@ -296,11 +346,11 @@ export default function dashboard() {
                     <p className="mt-2 text-xs leading-6 text-gray-400">
                       Hey{" "}
                       <span className="text-gray-900">{userInfo.fullName}</span>{" "}
-                      u can track user s activity here
+                      u can manage collaborators here and track their activity 
                     </p>
                   )}
                 </div>
-                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1  font-semibold text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none px-6 pt-2 pb-2  ">
+                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1  font-semibold text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none px-6 pt-2 pb-2 shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:text-white">
                   <button onClick={toggleModal}>Add Collaborator</button>
                 </div>
               </div>
@@ -323,9 +373,15 @@ export default function dashboard() {
                       {stat.name}
                     </p>
                     <p className="mt-2 flex items-baseline gap-x-2">
-                      <span className="text-4xl font-semibold tracking-tight text-grey">
-                        {stat.value}
-                      </span>
+                      {stat.name === "Total number of question posted" ? (
+                        <span className="text-4xl font-semibold tracking-tight text-grey">
+                          {postCount}
+                        </span>
+                      ) : (
+                        <span className="text-4xl font-semibold tracking-tight text-grey">
+                          {stat.value}
+                        </span>
+                      )}
                       {stat.unit ? (
                         <span className="text-sm text-gray-400">
                           {stat.unit}
@@ -408,8 +464,6 @@ export default function dashboard() {
                               <div className="font-mono text-sm leading-6 text-gray-400">
                                 {/*activityItem.commit*/}
                               </div>
-
-                              {/*activityItem.branch*/}
                             </div>
                           </td>
                           <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
@@ -420,15 +474,14 @@ export default function dashboard() {
                               //   "flex-none rounded-full p-1"
                               // )}
                               >
+                               {questionCountByUser[user._id] || 0}
                                 <div className="h-1.5 w-1.5 " />
                               </div>
-                              <div className="hidden text-grey sm:block">
-                                {/*activityItem.status*/}
-                              </div>
+                              <div className="hidden text-grey sm:block"></div>
                             </div>
                           </td>
                           <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                            {/*activityItem.ups*/}
+                          
                           </td>
                           <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
                             {/*activityItem.downs*/}

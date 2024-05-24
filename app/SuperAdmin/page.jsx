@@ -10,12 +10,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import DelUser from "../../components/DelUser";
 import EditUser from "../../components/EditUser";
-import {
-  ChartBarSquareIcon,
-  Cog6ToothIcon,
-  PuzzlePieceIcon,
-  SignalIcon,
-} from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, SignalIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 const navigation = [
@@ -27,12 +22,6 @@ const navigation = [
   },
   { name: "Profile", href: "#", icon: Cog6ToothIcon, current: false },
 ];
-// const secondaryNavigation = [
-//   { name: "Overview", href: "#", current: true },
-//   { name: "Settings", href: "#", current: false },
-//   { name: "Create Challenge", href: "#", current: false },
-//   { name: "Notifications", href: "#", current: false },
-// ];
 const stats = [
   { name: "Number of active users", value: "20" },
   { name: "Total number of question posted", value: "20" },
@@ -114,7 +103,7 @@ export default function dashboard() {
 
     fetchUsers();
   }, []);
-  
+
   return (
     <>
       <div className="block w-screen ">
@@ -245,98 +234,99 @@ export default function dashboard() {
               </Menu>
             )}
           </div>
-         
+
           {showModal && <AddUser onClose={toggleModal} />}
           <div className="">
-            <div className="border-t border-grey/10 pt-11">
-            <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
-            <div>
-              <div className="flex items-center gap-x-3">
-                <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
-                  <div className="h-2 w-2 rounded-full bg-current" />
+            <div className="border-t border-grey/10 ">
+              <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
+                <div>
+                  <div className="flex items-center gap-x-3">
+                    <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
+                      <div className="h-2 w-2 rounded-full bg-current" />
+                    </div>
+
+                    {userInfo && (
+                      <h1 className="flex gap-x-3 text-base leading-7 ">
+                        <span className="font-semibold text-grey">
+                          Super Admin Dashboard
+                        </span>
+                      </h1>
+                    )}
+                  </div>
+
+                  {userInfo && (
+                    <p className="mt-2 text-xs leading-6 text-gray-400">
+                      Hey{" "}
+                      <span className="text-gray-900">{userInfo.fullName}</span>{" "}
+                      u can add managers here
+                    </p>
+                  )}
                 </div>
-                
-                {userInfo && (
-                <h1 className="flex gap-x-3 text-base leading-7 ">
-                  <span className="font-semibold text-grey">
-                  {userInfo.category} Super Admin Dashboard
-                  </span>
-                </h1>
-              )}
+                <div className="flex items-end justify-end">
+                  <button
+                    className=" mx-10 mt-4 bg-gray-700 text-white rounded-full pt-2 pb-2 px-4 font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-900 hover:text-white "
+                    onClick={toggleModal}
+                  >
+                    Add Team Manager
+                  </button>
+                </div>
               </div>
-              
-              {userInfo && (
-              <p className="mt-2 text-xs leading-6 text-gray-400">
-                Hey <span className="text-gray-900">{userInfo.fullName}</span> u can add managers here 
-              </p>
-              )}
-            </div>
-            <div className="flex items-end justify-end">
-            <button className=" mx-10 mt-4 bg-gray-700 text-white rounded-full pt-2 pb-2 px-4 font-semibold " onClick={toggleModal}>
-              Add Team Manager
-            </button>
-          </div>
-          </div>
-          <table className="mt-6 w-full greyspace-nowrap text-left">
-          <colgroup>
-            <col className="w-full sm:w-4/12" />
-            <col className="lg:w-4/12" />
-            <col className="lg:w-2/12" />
-            <col className="lg:w-1/12" />
-            <col className="lg:w-1/12" />
-          </colgroup>
-           
-              <thead className="border-b border-grey/10 text-sm leading-6 text-gray">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
-                >
-                  User
-                </th>
-                <th
-                  scope="col"
-                  className=" py-2 pl-4 pr-8 font-semibold sm:table-cell lg:pl-8"
-                >
-                  Job
-                </th>
+              <table className="mt-6 w-full greyspace-nowrap text-left">
+                <colgroup>
+                  <col className="w-full sm:w-4/12" />
+                  <col className="lg:w-4/12" />
+                  <col className="lg:w-2/12" />
+                  <col className="lg:w-1/12" />
+                  <col className="lg:w-1/12" />
+                </colgroup>
+
+                <thead className="border-b border-grey/10 text-sm leading-6 text-gray">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
+                    >
+                      User
+                    </th>
+                    <th
+                      scope="col"
+                      className=" py-2 pl-4 pr-8 font-semibold sm:table-cell lg:pl-8"
+                    >
+                      Job
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5 ">
-                {users.map((user) => (
-                  <tr key={user._id}>
-                    <td className="py-4 pl-4 sm:pl-6 ">
-                      <div className="flex items-center gap-x-4">
-                        <img
-                          src={user.profilePic}
-                          alt={user.fullName}
-                          className="h-8 w-8 rounded-full bg-gray-800"
-                        />
-                        <div className="truncate text-sm font-medium leading-6 text-gray-800">
-                          {user.fullName}
+                  {users.map((user) => (
+                    <tr key={user._id}>
+                      <td className="py-4 pl-4 sm:pl-6 ">
+                        <div className="flex items-center gap-x-4">
+                          <img
+                            src={user.profilePic}
+                            alt={user.fullName}
+                            className="h-8 w-8 rounded-full bg-gray-800"
+                          />
+                          <div className="truncate text-sm font-medium leading-6 text-gray-800">
+                            {user.fullName}
+                          </div>
                         </div>
-                       
-                      </div>
-                    </td>
-                    <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-                    <div className="flex gap-x-3">
-                    <div className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">
-                    {user.category}
-                  </div>
-
-                   
-                    </div>
-                  </td>
-                    <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-800 md:table-cell lg:pr-8">
-                      <div className="flex items-center justify-center gap-x-2">
-                        <DelUser id={user._id} />
-                        <EditUser userData={user} />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              
+                      </td>
+                      <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                        <div className="flex gap-x-3">
+                          <div className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8">
+                          {user.isAdmin ? `${user.category} manager` : user.job}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-800 md:table-cell lg:pr-8">
+                        <div className="flex items-center justify-center gap-x-2">
+                          <DelUser id={user._id} />
+                          <EditUser userData={user} />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>
