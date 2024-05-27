@@ -5,7 +5,6 @@ import Comment from "./Comment";
 import Delete from "./Delete";
 import Up from "../components/Up";
 import Down from "../components/Down";
-// import Com from "../components/Com";
 import Edit from "./Edit";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -14,10 +13,7 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
   const user = useSession()?.data?.user;
   const router = useRouter();
-  const [upvotes, setUpvote] = useState([]);
-  const [downvotes, setDownvote] = useState([]);
 
-  
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -52,24 +48,9 @@ export default function Posts() {
             {posts.map((post) => (
               <article
                 key={post._id}
-                className="flex flex-col items-start justify-between rounded-lg mb-6 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 px-10 mx-34 "
+                className="flex flex-col items-start justify-between rounded-lg mb-6 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 px-10 mx-34 pt-10"
               >
                 <div className="flex items-end justify-end w-full gap-x-4">
-                  <Up
-                    id={post._id}
-                    count={upvotes.length}
-                    onPress={() => {
-                      handleVote(true, post._id);
-                    }}
-                  />
-                  <Down
-                    id={post._id}
-                    count={downvotes.length}
-                    onPress={() => {
-                      handleVote(false);
-                    }}
-                  />
-                  <PostComponent />
                   {user?.email === post.author.email && (
                     <Delete id={post._id} />
                   )}
@@ -213,7 +194,4 @@ const CommentsComponent = ({ comment, post, posts, user }) => {
       </div>
     </div>
   );
-};
-const PostComponent = ({ user }) => {
-  
 };

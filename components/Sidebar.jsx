@@ -24,18 +24,11 @@ import {
 } from "@heroicons/react/20/solid";
 
 const navigation = [
-  { name: "Home", href: "feed", icon: HomeIcon, current: true },
+  { name: "Feed", href: "feed", icon: HomeIcon, current: true },
   {
     name: "Your Profile",
     href: "/UserProfile",
     icon: UserIcon,
-    current: false,
-  },
-  { name: "Teams", href: "#", icon: UsersIcon, current: false },
-  {
-    name: "Challenges",
-    href: "#",
-    icon: PuzzlePieceIcon,
     current: false,
   },
   {
@@ -274,21 +267,7 @@ const Sidebar = () => {
                     ))}
                   </ul>
                 </li>
-                <div className="text-xs font-semibold leading-6 text-gray-400">
-                  suggestions
-                </div>
-                <li className="mt-auto">
-                  <a
-                    href="#"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
-                  >
-                    <Cog6ToothIcon
-                      className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
-                      aria-hidden="true"
-                    />
-                    Settings
-                  </a>
-                </li>
+             
               </ul>
             </nav>
           </div>
@@ -329,13 +308,7 @@ const Sidebar = () => {
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <button
-                  type="button"
-                  className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                
 
                 {/* Separator */}
                 <div
@@ -407,7 +380,7 @@ const Sidebar = () => {
               <CreatePost />
             </div>
           </main>
-          <Slides items={items} />
+         
         </div>
       </div>
     </>

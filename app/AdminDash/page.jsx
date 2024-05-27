@@ -24,28 +24,23 @@ const navigation = [
     icon: SignalIcon,
     current: false,
   },
-  {
-    name: "Create Challenge",
-    href: "/CreateChallenge",
-    icon: PuzzlePieceIcon,
-    current: false,
-  },
-  { name: "Profile", href: "UserProfile", icon: Cog6ToothIcon, current: false },
+ 
+  { name: "Profile", href: "/AdminProfile", icon: Cog6ToothIcon, current: false },
 ];
 const secondaryNavigation = [
   { name: "Overview", href: "#", current: true },
-  { name: "Settings", href: "#", current: false },
-  { name: "Create Challenge", href: "#", current: false },
-  { name: "Notifications", href: "#", current: false },
+  { name: "Profile", href: "/AdminProfile", current: false },
+
 ];
 const stats = [
-  { name: "Number of active users", value: "20" },
+  
   { name: "Total number of question posted", value: "20" },
   { name: "Total number of question answered", value: "10" },
   { name: "most active team", value: "web" },
+  { name: "Most active user", value: "fedi sarray" },
 ];
 const userNavigation = [
-  { name: "Your profile", href: "/UserProfile" },
+  { name: "Your profile", href: "/AdminProfile" },
   { name: "Sign out", onClick: signOut },
 ];
 
@@ -129,7 +124,7 @@ export default function dashboard() {
         if (response.ok) {
           const data = await response.json();
           setPosts(data.posts);
-          setPostCount(data.posts.length); 
+          setPostCount(data.posts.length);
         } else {
           console.error("Failed to fetch posts:", response.statusText);
         }
@@ -149,7 +144,7 @@ export default function dashboard() {
         if (response.ok) {
           const data = await response.json();
           setComments(data.comments);
-          setCommentCount(data.comments.length); 
+          setCommentCount(data.comments.length);
         } else {
           console.error("Failed to fetch comments:", response.statusText);
         }
@@ -160,16 +155,21 @@ export default function dashboard() {
     fetchComment();
   }, []);
 
-
   const filteredUsers = users.filter((user) => {
     const userJob = user.job?.toLowerCase();
     const userCategory = userInfo?.category?.toLowerCase();
     return userJob && userCategory ? userJob.includes(userCategory) : false;
   });
 
-
   const questionCountByUser = users.reduce((acc, user) => {
     acc[user._id] = posts.filter((post) => post.userId === user._id).length;
+    return acc;
+  }, {});
+
+  const commentCountByUser = users.reduce((acc, user) => {
+    acc[user._id] = comments
+      ? comments.filter((comment) => comment.userId === user._id).length
+      : 0;
     return acc;
   }, {});
 
@@ -346,7 +346,7 @@ export default function dashboard() {
                     <p className="mt-2 text-xs leading-6 text-gray-400">
                       Hey{" "}
                       <span className="text-gray-900">{userInfo.fullName}</span>{" "}
-                      u can manage collaborators here and track their activity 
+                      u can manage collaborators here and track their activity
                     </p>
                   )}
                 </div>
@@ -374,11 +374,11 @@ export default function dashboard() {
                     </p>
                     <p className="mt-2 flex items-baseline gap-x-2">
                       {stat.name === "Total number of question posted" ? (
-                        <span className="text-4xl font-semibold tracking-tight text-grey">
+                        <span className="text-3xl font-semibold tracking-tight text-grey">
                           {postCount}
                         </span>
                       ) : (
-                        <span className="text-4xl font-semibold tracking-tight text-grey">
+                        <span className="text-3xl font-semibold tracking-tight text-grey">
                           {stat.value}
                         </span>
                       )}
@@ -395,9 +395,11 @@ export default function dashboard() {
 
             {/* Activity list */}
             <div className="border-t border-grey/10 pt-11">
+            {userInfo && (
               <h2 className="px-4 text-base font-semibold leading-7 text-grey sm:px-6 lg:px-8">
-                Latest activity
+                List of {userInfo.category} collaborators
               </h2>
+            )}
               <table className="mt-6 w-full greyspace-nowrap text-left">
                 <colgroup>
                   <col className="w-full sm:w-4/12" />
@@ -430,13 +432,7 @@ export default function dashboard() {
                       scope="col"
                       className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
                     >
-                      UPs
-                    </th>
-                    <th
-                      scope="col"
-                      className="hidden py-2 pl-0 pr-8 font-semibold md:table-cell lg:pr-20"
-                    >
-                      Downs
+                      Points
                     </th>
                   </tr>
                 </thead>
@@ -459,11 +455,9 @@ export default function dashboard() {
                         </td>
 
                         <>
-                          <td className="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                          <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
                             <div className="flex gap-x-3">
-                              <div className="font-mono text-sm leading-6 text-gray-400">
-                                {/*activityItem.commit*/}
-                              </div>
+                              {commentCountByUser[user._id] || 0}
                             </div>
                           </td>
                           <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
@@ -474,18 +468,14 @@ export default function dashboard() {
                               //   "flex-none rounded-full p-1"
                               // )}
                               >
-                               {questionCountByUser[user._id] || 0}
+                                {questionCountByUser[user._id] || 0}
                                 <div className="h-1.5 w-1.5 " />
                               </div>
-                              <div className="hidden text-grey sm:block"></div>
+                             
                             </div>
                           </td>
-                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                          
-                          </td>
-                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                            {/*activityItem.downs*/}
-                          </td>
+                        
+                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-900 md:table-cell lg:pr-20">points</td>
                         </>
 
                         <>

@@ -13,8 +13,10 @@ const commentSchema = new Schema({
     default: Date.now,
   },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
-
+  upvote: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  downvote: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
+
 
 const Comment = mongoose.models.Comment || mongoose.model('Comment', commentSchema);
 

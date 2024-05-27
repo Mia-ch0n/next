@@ -1,57 +1,54 @@
 "use client";
-import Link from "next/link";
-import Settings from "../../components/Settings";
-
-import { Fragment, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import Settings from "../../components/Settings";
+import { Fragment, useState } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
 import { useEffect } from "react";
 import {
   Bars3Icon,
   BellIcon,
+  CalendarIcon,
+  ChartPieIcon,
   Cog6ToothIcon,
-  UserIcon,
+  DocumentDuplicateIcon,
+  FolderIcon,
   HomeIcon,
   UsersIcon,
   XMarkIcon,
-  PuzzlePieceIcon,
-  LightBulbIcon,
+  SignalIcon,
 } from "@heroicons/react/24/outline";
+
 import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 
 const navigation = [
-  { name: "Feed", href: "/feed", icon: HomeIcon, current: true },
   {
-    name: "Your Profile",
-    href: "/UserProfile",
-    icon: UserIcon,
+    name: "User s Activity",
+    href: "/AdminDash",
+    icon: SignalIcon,
     current: false,
   },
 
   {
-    name: "Enlightenment",
-    href: "/enlight",
-    icon: LightBulbIcon,
+    name: "Profile",
+    href: "/AdminProfile",
+    icon: Cog6ToothIcon,
     current: false,
   },
 ];
-
 const userNavigation = [
-  { name: "Your profile", href: "/UserProfile" },
-  { name: "Sign out", onClick: signOut },
-];
-
+    { name: "Your profile", href: "/AdminProfile" },
+    { name: "Sign out", onClick: signOut },
+  ];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Profile = () => {
+export default function adminProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const handleSignOut = async () => {
     const data = await signOut({ redirect: false });
     console.log(data);
@@ -88,6 +85,7 @@ const Profile = () => {
       fetchUserInfo();
     }
   }, [session]);
+
   return (
     <>
       <div className="block w-screen">
@@ -143,14 +141,9 @@ const Profile = () => {
                       </button>
                     </div>
                   </Transition.Child>
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
-                    <div className="flex h-16 shrink-0 items-center">
-                      <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                        alt="Your Company"
-                      />
-                    </div>
+                 
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                    
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
@@ -161,18 +154,13 @@ const Profile = () => {
                                   href={item.href}
                                   className={classNames(
                                     item.current
-                                      ? "bg-indigo-700 text-white"
-                                      : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                      ? "bg-gray-800 text-white"
+                                      : "text-gray-400 hover:text-white hover:bg-gray-800",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
                                   <item.icon
-                                    className={classNames(
-                                      item.current
-                                        ? "text-white"
-                                        : "text-indigo-200 group-hover:text-white",
-                                      "h-6 w-6 shrink-0"
-                                    )}
+                                    className="h-6 w-6 shrink-0"
                                     aria-hidden="true"
                                   />
                                   {item.name}
@@ -181,19 +169,8 @@ const Profile = () => {
                             ))}
                           </ul>
                         </li>
-
-                        <li className="mt-auto">
-                          <a
-                            href="#"
-                            className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white "
-                          >
-                            <Cog6ToothIcon
-                              className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
-                              aria-hidden="true"
-                            />
-                            Settings
-                          </a>
-                        </li>
+                    
+                    
                       </ul>
                     </nav>
                   </div>
@@ -204,17 +181,15 @@ const Profile = () => {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col ">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
-              <Link href="/" className="flex gap-2 flex-center">
-                <img
-                  className="h-8 w-auto"
-                  src="/assets/images/mobelitee.png"
-                  alt=""
-                />
-              </Link>
+              <img
+                className="h-8 w-auto"
+                src="/assets/images/mobelitee.png"
+                alt="mobelite"
+              />
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -226,18 +201,13 @@ const Profile = () => {
                           href={item.href}
                           className={classNames(
                             item.current
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                              ? "bg-gray-800 text-white"
+                              : "text-gray-400 hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
                           <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-white"
-                                : "text-indigo-200 group-hover:text-white",
-                              "h-6 w-6 shrink-0"
-                            )}
+                            className="h-6 w-6 shrink-0"
                             aria-hidden="true"
                           />
                           {item.name}
@@ -246,6 +216,8 @@ const Profile = () => {
                     ))}
                   </ul>
                 </li>
+            
+                
               </ul>
             </nav>
           </div>
@@ -286,6 +258,8 @@ const Profile = () => {
                 />
               </form>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
+               
+
                 {/* Separator */}
                 <div
                   className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
@@ -294,58 +268,58 @@ const Profile = () => {
 
                 {/* Profile dropdown */}
                 {userInfo && (
-                  <Menu as="div" className="relative">
-                    <Menu.Button className="-m-1.5 flex items-center p-1.5">
-                      <span className="sr-only">Open user menu</span>
-
-                      <img
-                        className="h-8 w-8 rounded-full bg-gray-50"
-                        src={userInfo.profilePic}
-                        alt=""
-                      />
-                      <span className="hidden lg:flex lg:items-center">
-                        <span
-                          className="ml-4 text-sm font-semibold leading-6 text-gray-900"
-                          aria-hidden="true"
-                        >
-                          {userInfo.fullName}
-                        </span>
-
-                        <ChevronDownIcon
-                          className="ml-2 h-5 w-5 text-gray-400"
-                          aria-hidden="true"
+                    <Menu as="div" className="relative">
+                      <Menu.Button className="-m-1.5 flex items-center p-1.5">
+                        <span className="sr-only">Open user menu</span>
+  
+                        <img
+                          className="h-8 w-8 rounded-full bg-gray-50"
+                          src={userInfo.profilePic}
+                          alt=""
                         />
-                      </span>
-                    </Menu.Button>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <button
-                                onClick={handleSignOut}
-                                className={classNames(
-                                  active ? "bg-gray-50" : "",
-                                  "block px-3 py-1 text-sm leading-6 text-gray-900"
-                                )}
-                              >
-                                {item.name}
-                              </button>
-                            )}
-                          </Menu.Item>
-                        ))}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                )}
+                        <span className="hidden lg:flex lg:items-center">
+                          <span
+                            className="ml-4 text-sm font-semibold leading-6 text-gray-900"
+                            aria-hidden="true"
+                          >
+                            {userInfo.fullName}
+                          </span>
+  
+                          <ChevronDownIcon
+                            className="ml-2 h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </Menu.Button>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                          {userNavigation.map((item) => (
+                            <Menu.Item key={item.name}>
+                              {({ active }) => (
+                                <button
+                                  onClick={handleSignOut}
+                                  className={classNames(
+                                    active ? "bg-gray-50" : "",
+                                    "block px-3 py-1 text-sm leading-6 text-gray-900"
+                                  )}
+                                >
+                                  {item.name}
+                                </button>
+                              )}
+                            </Menu.Item>
+                          ))}
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  )}
               </div>
             </div>
           </div>
@@ -359,5 +333,4 @@ const Profile = () => {
       </div>
     </>
   );
-};
-export default Profile;
+}

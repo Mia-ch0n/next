@@ -9,8 +9,7 @@ const postSchema = new Schema({
   createdBy: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-  upvote: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  downvote: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  
 });
 
 const Post = mongoose.models.Post || mongoose.model('Post', postSchema);

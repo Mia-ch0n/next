@@ -1,17 +1,19 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 
-
-export default  function createPost() {
-  const session = useSession()
+export default function createPost() {
+  const session = useSession();
 
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [titleError, setTitleError] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
   const router = useRouter();
+
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -20,6 +22,14 @@ export default  function createPost() {
       ...preState,
       [name]: value,
     }));
+
+    if (name === 'title') {
+      setTitle(value);
+      setTitleError(''); // Clear error when user types
+    } else if (name === 'description') {
+      setDescription(value);
+      setDescriptionError(''); // Clear error when user types
+    }
   };
 
   const startingPostData = {
@@ -27,30 +37,44 @@ export default  function createPost() {
     description: "",
   };
   const [formData, setFormData] = useState(startingPostData);
+
   const toggleForm = () => {
     setShowForm(!showForm);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let hasError = false;
+
+    if (title.trim() === '') {
+      setTitleError('Please enter a title');
+      hasError = true;
+    }
+
+    if (description.trim() === '') {
+      setDescriptionError('Please fill the description');
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     try {
-      if(session.data.user.email == undefined){
-        throw new Error('Email not found! check session!')
+      if (session.data.user.email == undefined) {
+        throw new Error('Email not found! check session!');
       }
-      console.log('create post ',session.data.user.email )
+      console.log('create post ', session.data.user.email);
       // call api
       const userResponse = await fetch('/api/user', {
         method: "POST",
-        body: JSON.stringify({ email:session.data.user.email }),
-      })
-      const {user} = await userResponse.json()
-      if (user._id == undefined){
-        throw new Error('Id not found!')
+        body: JSON.stringify({ email: session.data.user.email }),
+      });
+      const { user } = await userResponse.json();
+      if (user._id == undefined) {
+        throw new Error('Id not found!');
       }
       const response = await fetch('/api/posts', {
         method: "POST",
-        body: JSON.stringify({ ...formData,author:user?._id }),
-        //@ts-ignore
+        body: JSON.stringify({ ...formData, author: user?._id }),
         "Content-Type": "application/json",
       });
 
@@ -66,9 +90,9 @@ export default  function createPost() {
     } catch (error) {
       console.error('Error creating post:', error);
     }
-    router.refresh()
-   
+    router.refresh();
   };
+
   return (
     <div className="relative mx-20">
       <button
@@ -90,6 +114,7 @@ export default  function createPost() {
             className="block w-full border-0 pt-2.5 text-lg font-medium placeholder:text-gray-400 focus:ring-0"
             placeholder="Title"
           />
+          {titleError && <p className="text-red-500 text-sm">{titleError}</p>}
           <label htmlFor="description" className="sr-only">Description</label>
           <textarea
             rows={2}
@@ -101,6 +126,7 @@ export default  function createPost() {
             placeholder="Write a description..."
             defaultValue={''}
           />
+          {descriptionError && <p className="text-red-500 text-sm">{descriptionError}</p>}
           <div aria-hidden="true">
             <div className="py-2">
               <div className="h-9" />
@@ -128,7 +154,7 @@ export default  function createPost() {
                   type="submit"
                   className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Create
+                  Post
                 </button>
               </div>
             </div>
