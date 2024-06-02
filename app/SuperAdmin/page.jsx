@@ -20,7 +20,7 @@ const navigation = [
     icon: SignalIcon,
     current: false,
   },
-  { name: "Profile", href: "#", icon: Cog6ToothIcon, current: false },
+  
 ];
 const stats = [
   { name: "Number of active users", value: "20" },

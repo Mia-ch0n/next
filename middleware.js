@@ -1,6 +1,5 @@
 export { default } from "next-auth/middleware";
 
 export const config = {
-    matcher: ["/feed", "/AdminDash"]
-
+    matcher: ["/feed", "/AdminDash", "/SuperAdmin"],
 };

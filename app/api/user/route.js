@@ -14,7 +14,7 @@ export async function POST(req) {
 }
 export async function GET() {
   try {
-    const users = await User.find();
+    const users = await User.find().populate("posts").exec();
     return NextResponse.json({ users }, { status: 200 });
   } catch (err) {
     console.log(err);

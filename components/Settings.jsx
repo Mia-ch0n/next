@@ -6,6 +6,7 @@ export default function Profile() {
   const [userInfo, setUserInfo] = useState(null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [profilePic, setProfilePic] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,6 +27,7 @@ export default function Profile() {
           setUserInfo(data.user);
           setFullName(data.user.fullName);
           setEmail(data.user.email);
+          setProfilePic(data.user.profilePic);
         } else {
           console.error("Failed to fetch user information");
         }
@@ -43,13 +45,14 @@ export default function Profile() {
     e.preventDefault();
     try {
       const response = await fetch(`/api/create/${userInfo._id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          email: session.user.email,
-          name: fullName,
+          fullName,
+          email,
+          profilePic,
         }),
       });
 
@@ -71,13 +74,12 @@ export default function Profile() {
     }
 
     try {
-      const response = await fetch('/api/user/change-password', {
-        method: 'POST',
+      const response = await fetch(`/api/create/${userInfo._id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: session.user.email,
           currentPassword,
           newPassword,
         }),
@@ -122,6 +124,7 @@ export default function Profile() {
                           <button
                             type="button"
                             className="rounded-md bg-gray/10 px-3 py-2 text-sm font-semibold text-gray shadow-sm hover:bg-gray/20"
+                            onClick={() => setProfilePic(prompt('Enter new profile pic URL'))}
                           >
                             Change avatar
                           </button>
@@ -202,7 +205,7 @@ export default function Profile() {
                       >
                         Current password
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-2 bg-white">
                         <input
                           id="current-password"
                           name="current_password"
@@ -210,7 +213,7 @@ export default function Profile() {
                           autoComplete="current-password"
                           value={currentPassword}
                           onChange={(e) => setCurrentPassword(e.target.value)}
-                          className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 bg-gray/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-gray/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -222,7 +225,7 @@ export default function Profile() {
                       >
                         New password
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-2 bg-white">
                         <input
                           id="new-password"
                           name="new_password"
@@ -230,19 +233,19 @@ export default function Profile() {
                           autoComplete="new-password"
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
-                          className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 bg-gray/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-gray/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" 
                         />
                       </div>
                     </div>
 
-                    <div className="col-span-full">
+                    <div className="col-span-full ">
                       <label
                         htmlFor="confirm-password"
                         className="block text-sm font-medium leading-6 text-gray"
                       >
                         Confirm password
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-2 bg-white">
                         <input
                           id="confirm-password"
                           name="confirm_password"
@@ -250,7 +253,7 @@ export default function Profile() {
                           autoComplete="new-password"
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 bg-gray/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-gray/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>

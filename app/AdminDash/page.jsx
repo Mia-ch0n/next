@@ -24,18 +24,21 @@ const navigation = [
     icon: SignalIcon,
     current: false,
   },
- 
-  { name: "Profile", href: "/AdminProfile", icon: Cog6ToothIcon, current: false },
+
+  {
+    name: "Profile",
+    href: "/AdminProfile",
+    icon: Cog6ToothIcon,
+    current: false,
+  },
 ];
 const secondaryNavigation = [
-  { name: "Overview", href: "#", current: true },
+  { name: "Overview", href: "AdminDash", current: true },
   { name: "Profile", href: "/AdminProfile", current: false },
-
 ];
 const stats = [
-  
   { name: "Total number of question posted", value: "20" },
-  { name: "Total number of question answered", value: "10" },
+  { name: "Total number of answers", value: "10" },
   { name: "most active team", value: "web" },
   { name: "Most active user", value: "fedi sarray" },
 ];
@@ -161,17 +164,21 @@ export default function dashboard() {
     return userJob && userCategory ? userJob.includes(userCategory) : false;
   });
 
-  const questionCountByUser = users.reduce((acc, user) => {
-    acc[user._id] = posts.filter((post) => post.userId === user._id).length;
+  const questionCountByUser = posts.reduce((acc, post) => {
+    if (!acc[post.userId]) {
+      acc[post.userId] = 1;
+    } else {
+      acc[post.userId]++;
+    }
     return acc;
   }, {});
 
-  const commentCountByUser = users.reduce((acc, user) => {
-    acc[user._id] = comments
-      ? comments.filter((comment) => comment.userId === user._id).length
-      : 0;
-    return acc;
-  }, {});
+  const commentCountByUser = comments
+    ? comments.reduce((acc, comment) => {
+        acc[comment.userId] = (acc[comment.userId] || 0) + 1;
+        return acc;
+      }, {})
+    : {};
 
   return (
     <>
@@ -395,11 +402,11 @@ export default function dashboard() {
 
             {/* Activity list */}
             <div className="border-t border-grey/10 pt-11">
-            {userInfo && (
-              <h2 className="px-4 text-base font-semibold leading-7 text-grey sm:px-6 lg:px-8">
-                List of {userInfo.category} collaborators
-              </h2>
-            )}
+              {userInfo && (
+                <h2 className="px-4 text-base font-semibold leading-7 text-grey sm:px-6 lg:px-8">
+                  List of {userInfo.category} collaborators
+                </h2>
+              )}
               <table className="mt-6 w-full greyspace-nowrap text-left">
                 <colgroup>
                   <col className="w-full sm:w-4/12" />
@@ -455,27 +462,23 @@ export default function dashboard() {
                         </td>
 
                         <>
-                          <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                          <td className="py-4 pl-0 pr-4 text-sm font-medium leading-6 sm:pr-8 lg:pr-20">
                             <div className="flex gap-x-3">
                               {commentCountByUser[user._id] || 0}
                             </div>
                           </td>
-                          <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                          <td className="py-4 pl-0 pr-4 text-sm font-medium leading-6 sm:pr-8 lg:pr-20">
                             <div className="flex items-center justify-end gap-x-2 sm:justify-start">
-                              <div
-                              // className={classNames(
-                              //   statuses[activityItem.status],
-                              //   "flex-none rounded-full p-1"
-                              // )}
-                              >
+                              <div>
                                 {questionCountByUser[user._id] || 0}
                                 <div className="h-1.5 w-1.5 " />
                               </div>
-                             
                             </div>
                           </td>
-                        
-                          <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-900 md:table-cell lg:pr-20">points</td>
+
+                          <td className="hidden py-4 pl-0 pr-8 text-sm font-medium leading-6 text-gray-900 md:table-cell lg:pr-20">
+                            0
+                          </td>
                         </>
 
                         <>

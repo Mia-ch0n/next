@@ -45,12 +45,26 @@ export default function Posts() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 ">
         <div className="mx-auto max-w-4xl  ">
           <div className=" border-t border-gray-200 pt-10 sm:mt-10 sm:pt-16 ">
-            {posts.map((post) => (
-              <article
-                key={post._id}
-                className="flex flex-col items-start justify-between rounded-lg mb-6 isolate aspect-video rounded-xl bg-white/20 shadow-lg ring-1 ring-black/5 px-10 mx-34 pt-10"
-              >
-                <div className="flex items-end justify-end w-full gap-x-4">
+          {posts.map((post) => (
+            <article
+              key={post._id}
+              className="flex flex-col items-start justify-between rounded-lg mb-6 bg-white/20 shadow-lg ring-1 ring-black/5 px-10 pt-10"
+            >
+              <div className="relative flex items-center justify-between w-full gap-x-4">
+                <div className="flex items-center gap-x-4">
+                  <img
+                    src={post?.author?.profilePic}
+                    alt="profile pic"
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div className="text-sm leading-6">
+                    <p className="font-semibold text-gray-900">
+                      {post?.author?.fullName}
+                    </p>
+                    <p className="text-gray-600">{post?.author?.job}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-x-4">
                   {user?.email === post.author.email && (
                     <Delete id={post._id} />
                   )}
@@ -58,6 +72,7 @@ export default function Posts() {
                     <Edit postData={post} />
                   )}
                 </div>
+              </div>
                 <div className="group relative w-full">
                   <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <span className="absolute inset-0" />
@@ -72,20 +87,7 @@ export default function Posts() {
                     {post.description}
                   </p>
                 </div>
-                <div className="relative mt-8 flex items-center gap-x-4">
-                  <img
-                    src={post?.author?.profilePic}
-                    alt="profile pic"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div className="text-sm leading-6">
-                    <p className="font-semibold text-gray-900">
-                      <span className="absolute inset-0" />
-                      {post?.author?.fullName}
-                    </p>
-                    <p className="text-gray-600">{post?.author?.job}</p>
-                  </div>
-                </div>
+               
 
                 <div className="w-[500px]">
                   <Comment postID={post._id} />
@@ -175,7 +177,6 @@ const CommentsComponent = ({ comment, post, posts, user }) => {
             </div>
             <div className="flex items-end justify-end w-full gap-x-4">
               <Up
-                // id={post._id}
                 count={upvotes.length}
                 onPress={() => {
                   handleVote(true);
