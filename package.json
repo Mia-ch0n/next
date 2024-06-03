@@ -19,7 +19,9 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
+    "formidable": "^3.5.1",
     "framer-motion": "^11.2.4",
+    "fs": "^0.0.1-security",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.4",
     "next": "14.1.0",
@@ -34,6 +36,8 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/formidable": "^3.4.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
