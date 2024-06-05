@@ -109,9 +109,8 @@ export default function Profile() {
 
         if (response.ok) {
           const data = await response.json();
-          // Assuming the server response contains the updated user object
           setProfilePic(`/uploads/${data.filename}`);
-          alert('Profile picture updated successfully');
+         
         } else {
           const errorData = await response.json();
           alert(`Failed to update profile picture: ${errorData.message}`);

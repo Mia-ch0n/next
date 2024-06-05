@@ -45,34 +45,34 @@ export default function Posts() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 ">
         <div className="mx-auto max-w-4xl  ">
           <div className=" border-t border-gray-200 pt-10 sm:mt-10 sm:pt-16 ">
-          {posts.map((post) => (
-            <article
-              key={post._id}
-              className="flex flex-col items-start justify-between rounded-lg mb-6 bg-white/20 shadow-lg ring-1 ring-black/5 px-10 pt-10"
-            >
-              <div className="relative flex items-center justify-between w-full gap-x-4">
-                <div className="flex items-center gap-x-4">
-                  <img
-                    src={post?.author?.profilePic}
-                    alt="profile pic"
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div className="text-sm leading-6">
-                    <p className="font-semibold text-gray-900">
-                      {post?.author?.fullName}
-                    </p>
-                    <p className="text-gray-600">{post?.author?.job}</p>
+            {posts.map((post) => (
+              <article
+                key={post._id}
+                className="flex flex-col items-start justify-between rounded-lg mb-6 bg-white/20 shadow-lg ring-1 ring-black/5 px-10 pt-10"
+              >
+                <div className="relative flex items-center justify-between w-full gap-x-4">
+                  <div className="flex items-center gap-x-4">
+                    <img
+                      src={post?.author?.profilePic}
+                      alt="profile pic"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div className="text-sm leading-6">
+                      <p className="font-semibold text-gray-900">
+                        {post?.author?.fullName}
+                      </p>
+                      <p className="text-gray-600">{post?.author?.job}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-x-4">
+                    {user?.email === post.author.email && (
+                      <Delete id={post._id} />
+                    )}
+                    {user?.email === post.author.email && (
+                      <Edit postData={post} />
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center gap-x-4">
-                  {user?.email === post.author.email && (
-                    <Delete id={post._id} />
-                  )}
-                  {user?.email === post.author.email && (
-                    <Edit postData={post} />
-                  )}
-                </div>
-              </div>
                 <div className="group relative w-full">
                   <h3 className="flex items-center mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
                     <span className="absolute inset-0" />
@@ -83,12 +83,17 @@ export default function Posts() {
                       {formatCreatedAt(post._id)}
                     </time>
                   </div>
-                  <p className="mt-5 line-clamp-3 text-xl leading-6 text-gray-600">
+                  <p className="mt-5 line-clamp-3 text-xl leading-6 text-gray-600 mb-6">
                     {post.description}
                   </p>
+                  {post.imageUrl && (
+                  <img
+                  src={post?.imageUrl}
+                  className="w-[500px] h-[500px] justify-center"
+                />
+              )}
                 </div>
-               
-
+                  
                 <div className="w-[500px]">
                   <Comment postID={post._id} />
 
@@ -96,14 +101,14 @@ export default function Posts() {
 
                   {post.comments
                     .slice(0, showAllComments ? undefined : 3)
-                    .map((comment) => (
-                      <CommentsComponent
+                    .map((comment) => {
+                      return <CommentsComponent
                         comment={comment}
                         post={post}
                         posts={posts}
-                        user={user}
-                      />
-                    ))}
+                        userId={user.id}
+                      />}
+                    )}
                   <button
                     onClick={() => setShowAllComments(!showAllComments)}
                     className="text-sm text-gray-700 bg-gray-200 rounded-full mt-6"
@@ -120,30 +125,30 @@ export default function Posts() {
   );
 }
 
-const CommentsComponent = ({ comment, post, posts, user }) => {
-  const [upvotes, setUpvote] = useState([]);
-  const [downvotes, setDownvote] = useState([]);
+const CommentsComponent = ({ comment, post, posts, userId }) => {
+  const [upvotes, setUpvote] = useState(comment.like || []);
+  const [downvotes, setDownvote] = useState(comment.dislike || []);
 
-  const handleVote = (isUp, postID) => {
-    let PostData = posts.find((item) => item._id == postID);
-    if (isUp) {
-      //upvote logic
-      if (upvotes.includes(user.email)) {
-        //-1
-        let res = upvotes.filter((ids) => ids != user.email);
-        setUpvote(res);
-      } else {
-        //+1
-        setUpvote((prevState) => [...prevState, user.email]);
-      }
+  const handleVote = async (isUp) => {
+   await console.log("handle vote",comment._id);
+    const response = await fetch("/api/comments", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        commentId: comment._id,
+        userId: userId,
+        like: isUp,
+      }),
+    });
+
+    if (response.ok) {
+      const { comment: updatedComment } = await response.json();
+      setUpvote(updatedComment.like);
+      setDownvote(updatedComment.dislike);
     } else {
-      //dowvote logic
-      if (downvotes.includes(user.email)) {
-        let res = downvotes.filter((ids) => ids !== user.email);
-        setDownvote(res);
-      } else {
-        setDownvote((prevState) => [...prevState, user.email]);
-      }
+      console.error("Failed to update comment");
     }
   };
 
@@ -178,16 +183,13 @@ const CommentsComponent = ({ comment, post, posts, user }) => {
             <div className="flex items-end justify-end w-full gap-x-4">
               <Up
                 count={upvotes.length}
-                onPress={() => {
-                  handleVote(true);
-                }}
+                like={upvotes.includes(userId)}
+                onPress={() => handleVote(true)}
               />
               <Down
-                id={post?._id}
                 count={downvotes.length}
-                onPress={() => {
-                  handleVote(false);
-                }}
+                dislike={downvotes.includes(userId)}
+                onPress={() => handleVote(false)}
               />
             </div>
           </div>

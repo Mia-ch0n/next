@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
@@ -12,6 +12,10 @@ export default function createPost() {
   const [description, setDescription] = useState('');
   const [titleError, setTitleError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
+
+  const [file, setFile] = useState();
+  const fileInputRef = useRef(null);
+  const [fileName, setFileName] = useState('');
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -72,10 +76,17 @@ export default function createPost() {
       if (user._id == undefined) {
         throw new Error('Id not found!');
       }
+
+      const newFormData = new FormData()
+      newFormData.append("title",formData.title) 
+      newFormData.append("description",formData.description) 
+      newFormData.append("file",file) 
+      newFormData.append('author',user?._id)
+
       const response = await fetch('/api/posts', {
         method: "POST",
-        body: JSON.stringify({ ...formData, author: user?._id }),
-        "Content-Type": "application/json",
+        body: newFormData,
+        "Content-Type": "multipart/form-data",
       });
 
       if (response.ok) {
@@ -93,12 +104,23 @@ export default function createPost() {
     router.refresh();
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+      setFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <div className="relative mx-20">
       <button
         type="button"
         onClick={toggleForm}
-        className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 "
+        className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         Ask a Question
       </button>
@@ -141,13 +163,29 @@ export default function createPost() {
           <div className="absolute inset-x-px bottom-0">
             <div className="flex items-center justify-between space-x-3 border-t border-gray-200 px-2 py-2 sm:px-3">
               <div className="flex">
+                <input
+                  id="file"
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
                 <button
                   type="button"
+                  onClick={handleButtonClick}
                   className="group -my-2 -ml-2 inline-flex items-center rounded-full px-3 py-2 text-left text-gray-400"
                 >
-                  <PaperClipIcon className="-ml-1 mr-2 h-5 w-5 group-hover:text-gray-500" aria-hidden="true" />
-                  <span className="text-sm italic text-gray-500 group-hover:text-gray-600">Attach a file</span>
+                  <PaperClipIcon
+                    className="-ml-1 mr-2 h-5 w-5 group-hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm italic text-gray-500 group-hover:text-gray-600">
+                    Attach a file
+                  </span>
                 </button>
+                {fileName && (
+                  <span className="ml-2 text-sm text-gray-500">{fileName}</span>
+                )}
               </div>
               <div className="flex-shrink-0">
                 <button

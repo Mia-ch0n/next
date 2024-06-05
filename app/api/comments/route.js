@@ -23,10 +23,50 @@ export async function POST(req) {
 }
 export async function GET() {
   try {
-    const comment = await Comment.find().sort({ _id: -1 }).populate('author').exec();
+    const comment = await Comment.find().sort({ _id: -1 }).populate('author').populate('like').exec();
     return NextResponse.json({ comment }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Error fetching comments', error: err }, { status: 500 });
   }
 }
+export async function PATCH(req) {
+  try {
+    const { commentId, userId, like } = await req.json();
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return NextResponse.json({ message: 'Comment not found' }, { status: 404 });
+    }
+
+    if (like) {
+
+
+      // has like
+      if (comment.like.includes(userId)) {
+        comment.like = comment.like.filter((id) => {
+        return id?.toString() !== userId
+        })
+      } else {
+        comment.like.push(userId);
+        comment.dislike = comment.dislike.filter((id) => id?.toString() !== userId); 
+      }
+    } else {
+      console.log("userId: ",userId);
+      if (comment.dislike.includes(userId)) {
+        comment.dislike = comment.dislike.filter((id) => id.toString() !== userId);
+      } else {
+        comment.dislike.push(userId);
+        comment.like = comment.like.filter((id) => id.toString() !== userId); 
+      }
+    }
+
+    await comment.save();
+
+    return NextResponse.json({ message: 'Comment updated', comment }, { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ message: 'Error updating comment', error: err }, { status: 500 });
+  }
+}
+

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import path from "path";
 import { writeFile } from "fs/promises";
+
 export async function GET({ params }) {
   const { id } = params;
   const foundPost = await User.findOne({ _id: id });
@@ -25,7 +26,6 @@ export async function PUT(req, { params }) {
   try {
     const { id } = params;
     const { fullName, email, currentPassword, newPassword, profilePic } = await req.json();
-
     const updatedData = { fullName, email, profilePic };
 
     if (currentPassword && newPassword) {
