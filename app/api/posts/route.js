@@ -4,13 +4,12 @@ import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
 
-// TODO
+
 export async function GET() {
   try {
     const posts = await Post.find()
       .sort({ _id: -1 })
       .populate("author")
-      .populate("comments")
       .populate({
         path: "comments",
         populate: {

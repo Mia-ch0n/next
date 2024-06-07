@@ -36,12 +36,7 @@ const secondaryNavigation = [
   { name: "Overview", href: "AdminDash", current: true },
   { name: "Profile", href: "/AdminProfile", current: false },
 ];
-const stats = [
-  { name: "Total number of question posted", value: "20" },
-  { name: "Total number of answers", value: "10" },
-  { name: "most active team", value: "web" },
-  { name: "Most active user", value: "fedi sarray" },
-];
+
 const userNavigation = [
   { name: "Your profile", href: "/AdminProfile" },
   { name: "Sign out", onClick: signOut },
@@ -100,6 +95,38 @@ export default function dashboard() {
   const [commentCount, setCommentCount] = useState(0);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const stats = [
+    { name: "Total number of question posted", value: postCount },
+    { name: "Total number of answers", value: commentCount },
+    { name: "most active team", value: "web" },
+    { name: "Most active user", value: "fedi sarray" },
+  ];
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const response = await fetch("/api/posts", {
+          cache: "no-store",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setPosts(data.posts);
+  
+          let totalComments = 0;
+          data.posts.forEach(post => {
+            totalComments += post.comments.length;
+          });
+          setCommentCount(totalComments);
+  
+          setPostCount(data.posts.length);
+        } else {
+          console.error("Failed to fetch posts:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    }
+    fetchPosts();
+  }, []);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -139,25 +166,33 @@ export default function dashboard() {
   }, []);
 
   useEffect(() => {
-    async function fetchComment() {
+    async function fetchPosts() {
       try {
-        const response = await fetch("/api/comments", {
+        const response = await fetch("/api/posts", {
           cache: "no-store",
         });
         if (response.ok) {
           const data = await response.json();
-          setComments(data.comments);
-          setCommentCount(data.comments.length);
+          setPosts(data.posts);
+          
+          // Count total number of comments
+          let totalComments = 0;
+          data.posts.forEach(post => {
+            totalComments += post.comments.length;
+          });
+          setCommentCount(totalComments);
+  
+          setPostCount(data.posts.length);
         } else {
-          console.error("Failed to fetch comments:", response.statusText);
+          console.error("Failed to fetch posts:", response.statusText);
         }
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("Error fetching posts:", error);
       }
     }
-    fetchComment();
+    fetchPosts();
   }, []);
-
+  
   const filteredUsers = users.filter((user) => {
     const userJob = user.job?.toLowerCase();
     const userCategory = userInfo?.category?.toLowerCase();
@@ -165,21 +200,24 @@ export default function dashboard() {
   });
 
   const questionCountByUser = posts.reduce((acc, post) => {
-    if (!acc[post.userId]) {
-      acc[post.userId] = 1;
+    if (!acc[post.author._id]) {
+      acc[post.author._id] = 1;
     } else {
-      acc[post.userId]++;
+      acc[post.author._id]++;
     }
     return acc;
   }, {});
-
-  const commentCountByUser = comments
-    ? comments.reduce((acc, comment) => {
-        acc[comment.userId] = (acc[comment.userId] || 0) + 1;
-        return acc;
-      }, {})
-    : {};
-
+  
+  const commentCountByUser = posts.reduce((acc, post) => {
+    post.comments.forEach(comment => {
+      if (!acc[comment.author._id]) {
+        acc[comment.author._id] = 1;
+      } else {
+        acc[comment.author._id]++;
+      }
+    });
+    return acc;
+  }, {});
   return (
     <>
       <div className="block w-screen">
@@ -389,12 +427,9 @@ export default function dashboard() {
                           {stat.value}
                         </span>
                       )}
-                      {stat.unit ? (
-                        <span className="text-sm text-gray-400">
-                          {stat.unit}
-                        </span>
-                      ) : null}
+                     
                     </p>
+                    
                   </div>
                 ))}
               </div>
