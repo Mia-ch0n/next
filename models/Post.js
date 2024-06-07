@@ -7,7 +7,10 @@ const postSchema = new Schema({
   title: String,
   description: String,
   createdBy: String,
-  imageUrl: String,
+  imageUrl:{
+    type: String,
+    required: false,
+  },
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   

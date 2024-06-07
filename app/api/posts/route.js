@@ -33,21 +33,18 @@ export async function POST(req) {
   const description = formData.get("description");
   const author = formData.get("author");
 
-  if (!file) {
-    return NextResponse.json({ error: "No files received." }, { status: 400 });
-  }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = Date.now() + file.name.replaceAll(" ", "_");
-  const filePath = path.join(process.cwd(), "public/uploads/" + filename);
-
   try {
-    await writeFile(filePath, buffer);
+    let imageUrl = null;
+    
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const filename = Date.now() + file.name.replaceAll(" ", "_");
+      const filePath = path.join(process.cwd(), "public/uploads/" + filename);
+      await writeFile(filePath, buffer);
+      imageUrl = `/uploads/${filename}`;
+    }
 
-    // Update the user's profile picture in the database
-    const imageUrl = `/uploads/${filename}`;
-    // const body = await req.json();
-    await Post.create({title,description,imageUrl,author});
+    await Post.create({ title, description, imageUrl, author });
     return NextResponse.json({ message: "Post Created" }, { status: 201 });
   } catch (err) {
     console.log(err);

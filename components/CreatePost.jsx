@@ -4,7 +4,7 @@ import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 
-export default function createPost() {
+export default function CreatePost() {
   const session = useSession();
 
   const [showForm, setShowForm] = useState(false);
@@ -63,36 +63,35 @@ export default function createPost() {
     if (hasError) return;
 
     try {
-      if (session.data.user.email == undefined) {
-        throw new Error('Email not found! check session!');
+      if (!session.data.user.email) {
+        throw new Error('Email not found! Check session!');
       }
-      console.log('create post ', session.data.user.email);
-      // call api
+
+      console.log('create post', session.data.user.email);
       const userResponse = await fetch('/api/user', {
         method: "POST",
         body: JSON.stringify({ email: session.data.user.email }),
       });
       const { user } = await userResponse.json();
-      if (user._id == undefined) {
+      if (!user._id) {
         throw new Error('Id not found!');
       }
 
-      const newFormData = new FormData()
-      newFormData.append("title",formData.title) 
-      newFormData.append("description",formData.description) 
-      newFormData.append("file",file) 
-      newFormData.append('author',user?._id)
+      const newFormData = new FormData();
+      newFormData.append("title", formData.title);
+      newFormData.append("description", formData.description);
+      if (file) {
+        newFormData.append("file", file);
+      }
+      newFormData.append('author', user?._id);
 
       const response = await fetch('/api/posts', {
         method: "POST",
         body: newFormData,
-        "Content-Type": "multipart/form-data",
       });
 
       if (response.ok) {
-        // hide the form after successful submission
         setShowForm(false);
-        // clear the form fields
         setTitle('');
         setDescription('');
       } else {
