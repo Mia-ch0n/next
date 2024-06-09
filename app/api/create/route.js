@@ -1,16 +1,17 @@
-import "../../../models/User";
-import User from "../../../models/User";
+import bcrypt from 'bcryptjs'; 
 
+import User from "../../../models/User";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  
   try {
     const { email, password, fullName, job } = await req.json();
-    const user = await User.create({ email, password, fullName, job });
+    const hashedPassword = await bcrypt.hash(password, 10); 
+
+    const user = await User.create({ email, password: hashedPassword, fullName, job }); 
     return NextResponse.json({ user }, { status: 201 });
   } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "Error", err }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ message: "Error", error: err }, { status: 500 });
   }
 }

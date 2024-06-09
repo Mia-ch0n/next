@@ -12,58 +12,62 @@ export default function Profile() {
   const [profilePic, setProfilePic] = useState(null);
   const { data: session } = useSession();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await fetch("/api/user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: session.user.email }),
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUserInfo(data.user);
-          setFullName(data.user.fullName);
-          setEmail(data.user.email);
-          setProfilePic(data.user.profilePic);
-        } else {
-          console.error("Failed to fetch user information");
-        }
-      } catch (error) {
-        console.error("Error fetching user information:", error);
-      }
-    };
-
-    if (session) {
-      fetchUserInfo();
-    }
-  }, [session]);
-
-  const handleProfileSubmit = async (e) => {
-    e.preventDefault();
+ useEffect(() => {
+  const fetchUserInfo = async () => {
     try {
-      const response = await fetch(`/api/create/${userInfo._id}`, {
-        method: 'PUT',
+      const response = await fetch("/api/user", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          email: session.user.email,
-          fullName,
-        }),
+        body: JSON.stringify({ email: session.user.email }),
       });
-
       if (response.ok) {
-        alert('Profile updated successfully');
+        const data = await response.json();
+        setUserInfo(data.user);
+        setFullName(data.user.fullName);
+        setEmail(data.user.email);
+        setProfilePic(data.user.profilePic);
       } else {
-        alert('Failed to update profile');
+        console.error("Failed to fetch user information");
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error fetching user information:", error);
     }
   };
+
+  if (session) {
+    fetchUserInfo();
+  }
+}, [session]);
+
+const handleProfileSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    console.log("Updating profile with data:", { email: session.user.email, fullName });
+    const response = await fetch(`/api/create/${userInfo._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        email: session.user.email,
+        fullName,
+      }),
+    });
+
+    if (response.ok) {
+      console.log("Profile updated successfully");
+      alert('Profile updated successfully');
+    } else {
+      console.error("Failed to update profile");
+      alert('Failed to update profile');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+  }
+};
+
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
