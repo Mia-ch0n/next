@@ -95,12 +95,8 @@ export default function dashboard() {
   const [commentCount, setCommentCount] = useState(0);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const stats = [
-    { name: "Total number of question posted", value: postCount },
-    { name: "Total number of answers", value: commentCount },
-    { name: "most active team", value: "web" },
-    { name: "Most active user", value: "fedi sarray" },
-  ];
+  const [mostActiveTeam, setMostActiveTeam] = useState(null);
+  const [mostActiveUser, setMostActiveUser] = useState(null);
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -218,6 +214,70 @@ export default function dashboard() {
     });
     return acc;
   }, {});
+  const calculatePoints = (posts) => {
+    let pointsByUser = {};
+
+    posts.forEach((post) => {
+      // Add points for posts
+      if (!pointsByUser[post.author._id]) {
+        pointsByUser[post.author._id] = 1;
+      } else {
+        pointsByUser[post.author._id]++;
+      }
+
+      // Add points for comments
+      post.comments.forEach((comment) => {
+        if (!pointsByUser[comment.author._id]) {
+          pointsByUser[comment.author._id] = 2;
+        } else {
+          pointsByUser[comment.author._id] += 2;
+        }
+
+        // Add points for likes on comments
+        if (Array.isArray(comment.likes)) {
+          comment.likes.forEach((like) => {
+            if (!pointsByUser[comment.author._id]) {
+              pointsByUser[comment.author._id] = 3;
+            } else {
+              pointsByUser[comment.author._id] += 3;
+            }
+          });
+        }
+      });
+    });
+
+    return pointsByUser;
+  };
+
+  // Find the user with the maximum points
+  useEffect(() => {
+    // Calculate points earned by each user
+    const userPoints = calculatePoints(posts);
+  
+    // Find the user with the maximum points if userPoints is not empty
+    if (Object.keys(userPoints).length > 0) {
+      const maxPointsUserId = Object.keys(userPoints).reduce(
+        (a, b) => (userPoints[a] > userPoints[b] ? a : b)
+      );
+      const mostActiveUser = users.find((user) => user._id === maxPointsUserId);
+      setMostActiveUser(mostActiveUser);
+    } else {
+      // If no posts are available, set mostActiveUser to null
+      setMostActiveUser(null);
+    }
+  }, [posts, users]);
+  
+
+  // Define the stats array including the most active user
+  const stats = [
+    { name: "Total number of question posted", value: postCount },
+    { name: "Total number of answers", value: commentCount },
+    { name: "Most active team", value: mostActiveUser ? mostActiveUser.job : "none" },
+    { name: "Most active user", value: mostActiveUser ? mostActiveUser.fullName : "none" },
+    
+  ];
+    const userPoints = calculatePoints(posts);
+  
   return (
     <>
       <div className="block w-screen">
@@ -512,7 +572,7 @@ export default function dashboard() {
                           </td>
 
                           <td className="hidden py-4 pl-0 pr-8 text-sm font-medium leading-6 text-gray-900 md:table-cell lg:pr-20">
-                            0
+                          {userPoints[user._id] || 0}
                           </td>
                         </>
 

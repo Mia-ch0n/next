@@ -22,14 +22,9 @@ const navigation = [
   },
   
 ];
-const stats = [
-  { name: "Number of active users", value: "20" },
-  { name: "Total number of question posted", value: "20" },
-  { name: "Total number of question answered", value: "10" },
-  { name: "most active team", value: "web" },
-];
+
 const userNavigation = [
-  { name: "Your profile", href: "/UserProfile" },
+
   { name: "Sign out", onClick: signOut },
 ];
 const statuses = {

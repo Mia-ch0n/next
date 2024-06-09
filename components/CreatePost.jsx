@@ -88,19 +88,22 @@ export default function CreatePost() {
       const response = await fetch('/api/posts', {
         method: "POST",
         body: newFormData,
+        cache: 'no-store'
       });
 
       if (response.ok) {
         setShowForm(false);
         setTitle('');
         setDescription('');
+        router.refresh();
+        
       } else {
         console.error('Failed to create post:', response.statusText);
       }
     } catch (error) {
       console.error('Error creating post:', error);
     }
-    router.refresh();
+  
   };
 
   const handleFileChange = (e) => {

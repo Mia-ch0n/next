@@ -36,6 +36,11 @@ const userSchema = new Schema(
       type: String,
       required: false,
     },
+    points: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
 
     profilePic: String,
     forgotPasswordToken: String,
