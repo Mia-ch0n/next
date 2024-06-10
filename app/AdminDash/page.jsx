@@ -10,6 +10,9 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import DelUser from "../../components/DelUser";
 import EditUser from "../../components/EditUser";
+import MagicButton from "../../components/MagicButtton";
+import { motion } from "framer-motion";
+import { TextGenerateEffect } from "@components/Text-Generate";
 import {
   Cog6ToothIcon,
   PuzzlePieceIcon,
@@ -431,7 +434,7 @@ export default function dashboard() {
               </nav>
 
               {/* Heading */}
-              <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
+              <div className="flex flex-col rounded-2xl mx-5 items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
                 <div>
                   <div className="flex items-center gap-x-3">
                     <div className="flex-none rounded-full bg-green-400/10 p-1 text-green-400">
@@ -439,29 +442,27 @@ export default function dashboard() {
                     </div>
 
                     {userInfo && (
-                      <h1 className="flex gap-x-3 text-base leading-7 ">
-                        <span className="font-semibold text-grey">
-                          {userInfo.category} Manager Dashboard
-                        </span>
-                      </h1>
+                      <h1 className="flex gap-x-3 text-base leading-7">
+                      <TextGenerateEffect words={`${userInfo.category} Manager Dashboard`} />
+                    </h1>
                     )}
                   </div>
 
                   {userInfo && (
-                    <p className="mt-2 text-xs leading-6 text-gray-400">
+                    <p className="mt-2 text-xs leading-6 text-gray-400 ">
                       Hey{" "}
-                      <span className="text-gray-900">{userInfo.fullName}</span>{" "}
+                      <span className="text-gray-900 ">{userInfo.fullName}</span>{" "}
                       u can manage collaborators here and track their activity
                     </p>
                   )}
                 </div>
-                <div className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1  font-semibold text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none px-6 pt-2 pb-2 shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:text-white">
-                  <button onClick={toggleModal}>Add Collaborator</button>
+                <div className="">
+                  <MagicButton text={"Add Collaborator"} onClick={toggleModal}/>
                 </div>
               </div>
               {showModal && <AddUser onClose={toggleModal} />}
               {/* Stats */}
-              <div className="grid grid-cols-1 bg-gray-700/10 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 rounded-2xl mx-5 mt-4 bg-gray-700/10 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map((stat, statIdx) => (
                   <div
                     key={stat.name}
@@ -539,10 +540,14 @@ export default function dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5">
-                  {filteredUsers.map((user, index) => {
+                  {filteredUsers.map((user, i) => {
                     // const activityItem = activityItems.find(item => item.userId === user._id);
                     return (
-                      <tr key={user._id}>
+                      <motion.tr 
+                      initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y:0 }}
+                    transition={{ duration: 0.2 *i }}
+                    key={user._id}>
                         <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
                           <div className="flex items-center gap-x-4">
                             <img
@@ -589,7 +594,7 @@ export default function dashboard() {
                         <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
                           <EditUser userData={user} />
                         </td>
-                      </tr>
+                      </motion.tr>
                     );
                   })}
                 </tbody>

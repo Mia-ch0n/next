@@ -12,7 +12,9 @@ import DelUser from "../../components/DelUser";
 import EditUser from "../../components/EditUser";
 import { Cog6ToothIcon, SignalIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-
+import MagicButton from "../../components/MagicButtton";
+import { TextGenerateEffect } from "@components/Text-Generate";
+import { motion } from "framer-motion";
 const navigation = [
   {
     name: "Dashboard",
@@ -243,13 +245,14 @@ export default function dashboard() {
                     {userInfo && (
                       <h1 className="flex gap-x-3 text-base leading-7 ">
                         <span className="font-semibold text-grey">
-                          Super Admin Dashboard
+                          <TextGenerateEffect words={" Super Admin Dashboard"} />
                         </span>
                       </h1>
                     )}
                   </div>
 
                   {userInfo && (
+                    
                     <p className="mt-2 text-xs leading-6 text-gray-400">
                       Hey{" "}
                       <span className="text-gray-900">{userInfo.fullName}</span>{" "}
@@ -258,12 +261,7 @@ export default function dashboard() {
                   )}
                 </div>
                 <div className="flex items-end justify-end">
-                  <button
-                    className=" mx-10 mt-4 bg-gray-700 text-white rounded-full pt-2 pb-2 px-4 font-semibold shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-900 hover:text-white "
-                    onClick={toggleModal}
-                  >
-                    Add Team Manager
-                  </button>
+                <MagicButton text={"Add Team Manager"} onClick={toggleModal}/>
                 </div>
               </div>
               <table className="mt-6 w-full greyspace-nowrap text-left">
@@ -292,8 +290,12 @@ export default function dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-grey/5 ">
-                  {users.map((user) => (
-                    <tr key={user._id}>
+                  {users.map((user,i) => (
+                    <motion.tr 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y:0 }}
+                    transition={{ duration: 0.2 *i }}
+                     key={user._id}>
                       <td className="py-4 pl-4 sm:pl-6 ">
                         <div className="flex items-center gap-x-4">
                           <img
@@ -319,7 +321,7 @@ export default function dashboard() {
                           <EditUser userData={user} />
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   ))}
                 </tbody>
               </table>
