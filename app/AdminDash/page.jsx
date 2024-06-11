@@ -136,7 +136,10 @@ export default function dashboard() {
         const response = await fetch("/api/user");
         if (response.ok) {
           const data = await response.json();
-          setUsers(data.users);
+          const filteredUsers = data.users.filter(
+            (user) => user.email !== session.user.email
+          );
+          setUsers(filteredUsers);
         } else {
           console.error("Failed to fetch users");
         }
@@ -145,8 +148,9 @@ export default function dashboard() {
       }
     };
 
-    fetchUsers();
-  }, []);
+    if (session) fetchUsers();
+  }, [session]);
+
 
   useEffect(() => {
     async function fetchPosts() {

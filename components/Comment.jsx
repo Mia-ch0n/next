@@ -47,6 +47,7 @@ export default function Comment({ postID }) {
       });
       if (response.ok) {
         setComment("");
+        location.reload();
         console.log("Comment submitted successfully!");
       } else {
         console.error("Failed to submit comment:", response.statusText);
