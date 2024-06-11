@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
-export default function EditPostPopup({ postData }) {
+export default function EditPostPopup({ postData, onEdit }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
   const [title, setTitle] = useState("");
@@ -49,7 +49,9 @@ export default function EditPostPopup({ postData }) {
       if (response.ok) {
         console.log("Post updated successfully!");
         closePopup();
-        router.refresh();
+        onEdit(postData);
+        location.reload();
+
       } else {
         console.error("Failed to update post:", response.statusText);
       }

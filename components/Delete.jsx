@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 
-const DeleteBlock = ({ id }) => {
+const DeleteBlock = ({ id, onDelete }) => {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
@@ -25,7 +25,9 @@ const DeleteBlock = ({ id }) => {
       });
       if (res.ok) {
         closePopup();
-        router.reload();
+        onDelete(id);
+
+
       } else {
         console.error("Failed to delete post:", res.statusText);
       }

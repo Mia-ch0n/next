@@ -13,6 +13,8 @@ export async function POST(req) {
   }
 }
 
+
+
 export async function GET() {
   try {
     const users = await User.find().populate({

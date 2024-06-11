@@ -109,6 +109,9 @@ const Sidebar = () => {
       fetchUserInfo();
     }
   }, [session]);
+  const handleAddPost = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]); // Add the new post to the posts state
+  };
   return (
     <>
       <div>
@@ -377,7 +380,7 @@ const Sidebar = () => {
 
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">
-              <CreatePost />
+              <CreatePost onAddPost={handleAddPost} />
             </div>
           </main>
          

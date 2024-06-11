@@ -13,6 +13,10 @@ import EditUser from "../../components/EditUser";
 import MagicButton from "../../components/MagicButtton";
 import { motion } from "framer-motion";
 import { TextGenerateEffect } from "@components/Text-Generate";
+import { CiCircleQuestion } from "react-icons/ci";
+import { MdOutlineQuestionAnswer } from "react-icons/md";
+import { RiTeamFill } from "react-icons/ri";
+import { MdPerson } from "react-icons/md";
 import {
   Cog6ToothIcon,
   PuzzlePieceIcon,
@@ -92,7 +96,7 @@ export default function dashboard() {
       fetchUserInfo();
     }
   }, [session]);
-
+  console.log("yousri = ",session)
   const [users, setUsers] = useState([]);
   const [postCount, setPostCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
@@ -109,13 +113,13 @@ export default function dashboard() {
         if (response.ok) {
           const data = await response.json();
           setPosts(data.posts);
-  
+
           let totalComments = 0;
-          data.posts.forEach(post => {
+          data.posts.forEach((post) => {
             totalComments += post.comments.length;
           });
           setCommentCount(totalComments);
-  
+
           setPostCount(data.posts.length);
         } else {
           console.error("Failed to fetch posts:", response.statusText);
@@ -173,14 +177,14 @@ export default function dashboard() {
         if (response.ok) {
           const data = await response.json();
           setPosts(data.posts);
-          
+
           // Count total number of comments
           let totalComments = 0;
-          data.posts.forEach(post => {
+          data.posts.forEach((post) => {
             totalComments += post.comments.length;
           });
           setCommentCount(totalComments);
-  
+
           setPostCount(data.posts.length);
         } else {
           console.error("Failed to fetch posts:", response.statusText);
@@ -191,7 +195,7 @@ export default function dashboard() {
     }
     fetchPosts();
   }, []);
-  
+
   const filteredUsers = users.filter((user) => {
     const userJob = user.job?.toLowerCase();
     const userCategory = userInfo?.category?.toLowerCase();
@@ -206,9 +210,9 @@ export default function dashboard() {
     }
     return acc;
   }, {});
-  
+
   const commentCountByUser = posts.reduce((acc, post) => {
-    post.comments.forEach(comment => {
+    post.comments.forEach((comment) => {
       if (!acc[comment.author._id]) {
         acc[comment.author._id] = 1;
       } else {
@@ -256,11 +260,11 @@ export default function dashboard() {
   useEffect(() => {
     // Calculate points earned by each user
     const userPoints = calculatePoints(posts);
-  
+
     // Find the user with the maximum points if userPoints is not empty
     if (Object.keys(userPoints).length > 0) {
-      const maxPointsUserId = Object.keys(userPoints).reduce(
-        (a, b) => (userPoints[a] > userPoints[b] ? a : b)
+      const maxPointsUserId = Object.keys(userPoints).reduce((a, b) =>
+        userPoints[a] > userPoints[b] ? a : b
       );
       const mostActiveUser = users.find((user) => user._id === maxPointsUserId);
       setMostActiveUser(mostActiveUser);
@@ -269,18 +273,43 @@ export default function dashboard() {
       setMostActiveUser(null);
     }
   }, [posts, users]);
-  
 
-  // Define the stats array including the most active user
   const stats = [
-    { name: "Total number of question posted", value: postCount },
-    { name: "Total number of answers", value: commentCount },
-    { name: "Most active team", value: mostActiveUser ? mostActiveUser.job : "none" },
-    { name: "Most active user", value: mostActiveUser ? mostActiveUser.fullName : "none" },
-    
+    {
+      name: "Total number of question posted",
+      value: postCount,
+      icon: <CiCircleQuestion color="gray" size={20} />,
+    },
+    {
+      name: "Total number of answers",
+      value: commentCount,
+      icon: <MdOutlineQuestionAnswer color="gray" size={20} />,
+    },
+    {
+      name: "Most active team",
+      value: mostActiveUser ? mostActiveUser.job : "none",
+      icon: <RiTeamFill color="gray" size={20} />,
+    },
+    {
+      name: "Most active user",
+      value: mostActiveUser ? mostActiveUser.fullName : "none",
+      icon: <MdPerson color="gray" size={20} />,
+    },
   ];
-    const userPoints = calculatePoints(posts);
-  
+  const userPoints = calculatePoints(posts);
+  const handleUserDelete = (userId) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+  };
+  const handleUserAdd = (newUser) => {
+    setUsers((prevUsers) => [...prevUsers, newUser]);
+    setShowModal(false);
+  };
+  const handleEditUser = (updatedUser) => {
+    setUsers(
+      users.map((user) => (user._id === updatedUser._id ? updatedUser : user))
+    );
+  };
+
   return (
     <>
       <div className="block w-screen">
@@ -443,24 +472,33 @@ export default function dashboard() {
 
                     {userInfo && (
                       <h1 className="flex gap-x-3 text-base leading-7">
-                      <TextGenerateEffect words={`${userInfo.category} Manager Dashboard`} />
-                    </h1>
+                        <TextGenerateEffect
+                          words={`${userInfo.category} Manager Dashboard`}
+                        />
+                      </h1>
                     )}
                   </div>
 
                   {userInfo && (
                     <p className="mt-2 text-xs leading-6 text-gray-400 ">
                       Hey{" "}
-                      <span className="text-gray-900 ">{userInfo.fullName}</span>{" "}
+                      <span className="text-gray-900 ">
+                        {userInfo.fullName}
+                      </span>{" "}
                       u can manage collaborators here and track their activity
                     </p>
                   )}
                 </div>
                 <div className="">
-                  <MagicButton text={"Add Collaborator"} onClick={toggleModal}/>
+                  <MagicButton
+                    text={"Add Collaborator"}
+                    onClick={toggleModal}
+                  />
                 </div>
               </div>
-              {showModal && <AddUser onClose={toggleModal} />}
+              {showModal && (
+                <AddUser onClose={toggleModal} onAdd={handleUserAdd} />
+              )}
               {/* Stats */}
               <div className="grid grid-cols-1 rounded-2xl mx-5 mt-4 bg-gray-700/10 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map((stat, statIdx) => (
@@ -475,22 +513,27 @@ export default function dashboard() {
                       "border-t border-grey/5 py-6 px-4 sm:px-6 lg:px-8"
                     )}
                   >
-                    <p className="text-sm font-medium leading-6 text-gray-400">
+                    <p className="text-sm font-medium leading-6 text-gray-400 flex justify-start items-center gap-3">
+                      {stat.icon}
                       {stat.name}
                     </p>
                     <p className="mt-2 flex items-baseline gap-x-2">
                       {stat.name === "Total number of question posted" ? (
-                        <span className="text-3xl font-semibold tracking-tight text-grey">
+                        <motion.span
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4}} className="text-3xl font-semibold tracking-tight text-grey">
                           {postCount}
-                        </span>
+                        </motion.span>
                       ) : (
-                        <span className="text-3xl font-semibold tracking-tight text-grey">
+                        <motion.span
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }} className="text-3xl font-semibold tracking-tight text-grey">
                           {stat.value}
-                        </span>
+                        </motion.span>
                       )}
-                     
                     </p>
-                    
                   </div>
                 ))}
               </div>
@@ -543,11 +586,12 @@ export default function dashboard() {
                   {filteredUsers.map((user, i) => {
                     // const activityItem = activityItems.find(item => item.userId === user._id);
                     return (
-                      <motion.tr 
-                      initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y:0 }}
-                    transition={{ duration: 0.2 *i }}
-                    key={user._id}>
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 * i }}
+                        key={user._id}
+                      >
                         <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
                           <div className="flex items-center gap-x-4">
                             <img
@@ -577,7 +621,7 @@ export default function dashboard() {
                           </td>
 
                           <td className="hidden py-4 pl-0 pr-8 text-sm font-medium leading-6 text-gray-900 md:table-cell lg:pr-20">
-                          {userPoints[user._id] || 0}
+                            {userPoints[user._id] || 0}
                           </td>
                         </>
 
@@ -589,10 +633,10 @@ export default function dashboard() {
                         </>
 
                         <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-8">
-                          <DelUser id={user._id} />
+                          <DelUser id={user._id} onDelete={handleUserDelete} />
                         </td>
                         <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">
-                          <EditUser userData={user} />
+                          <EditUser userData={user} onEdit={handleEditUser} />
                         </td>
                       </motion.tr>
                     );

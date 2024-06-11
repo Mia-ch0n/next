@@ -4,7 +4,7 @@ import { PaperClipIcon } from '@heroicons/react/20/solid';
 import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 
-export default function CreatePost() {
+export default function CreatePost({ onAddPost }) {
   const session = useSession();
 
   const [showForm, setShowForm] = useState(false);
@@ -68,6 +68,7 @@ export default function CreatePost() {
       }
 
       console.log('create post', session.data.user.email);
+      
       const userResponse = await fetch('/api/user', {
         method: "POST",
         body: JSON.stringify({ email: session.data.user.email }),
@@ -95,7 +96,8 @@ export default function CreatePost() {
         setShowForm(false);
         setTitle('');
         setDescription('');
-        router.refresh();
+        location.reload();
+
         
       } else {
         console.error('Failed to create post:', response.statusText);
@@ -117,6 +119,7 @@ export default function CreatePost() {
     fileInputRef.current.click();
   };
 
+  
   return (
     <div className="relative mx-20">
       <button
@@ -191,6 +194,7 @@ export default function CreatePost() {
               </div>
               <div className="flex-shrink-0">
                 <button
+                
                   type="submit"
                   className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >

@@ -101,6 +101,13 @@ export default function dashboard() {
     fetchUsers();
   }, []);
 
+  const handleUserDelete = (userId) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+  };
+  const handleUserAdd = (newUser) => {
+    setUsers((prevUsers) => [...prevUsers, newUser]);
+    setShowModal(false); 
+  };
   return (
     <>
       <div className="block w-screen ">
@@ -232,7 +239,7 @@ export default function dashboard() {
             )}
           </div>
 
-          {showModal && <AddUser onClose={toggleModal} />}
+          {showModal && <AddUser onClose={toggleModal} onAdd={handleUserAdd} />}
           <div className="">
             <div className="border-t border-grey/10 ">
               <div className="flex flex-col items-start justify-between gap-x-8 gap-y-4 bg-gray-700/10 px-4 py-4 sm:flex-row sm:items-center sm:px-6 lg:px-8 mt-10">
@@ -294,7 +301,7 @@ export default function dashboard() {
                     <motion.tr 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y:0 }}
-                    transition={{ duration: 0.2 *i }}
+                    transition={{ duration: 0.4 *i }}
                      key={user._id}>
                       <td className="py-4 pl-4 sm:pl-6 ">
                         <div className="flex items-center gap-x-4">
@@ -317,7 +324,7 @@ export default function dashboard() {
                       </td>
                       <td className="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-800 md:table-cell lg:pr-8">
                         <div className="flex items-center justify-center gap-x-2">
-                          <DelUser id={user._id} />
+                          <DelUser id={user._id} onDelete={handleUserDelete}/>
                           <EditUser userData={user} />
                         </div>
                       </td>

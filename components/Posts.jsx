@@ -12,7 +12,6 @@ import { useSession } from "next-auth/react";
 export default function Posts() {
   const [posts, setPosts] = useState([]);
   const user = useSession()?.data?.user;
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchPosts() {
@@ -24,6 +23,7 @@ export default function Posts() {
           const data = await response.json();
 
           setPosts(data.posts);
+          
         } else {
           console.error("Failed to fetch posts:", response.statusText);
         }
@@ -39,7 +39,14 @@ export default function Posts() {
     return new Date(timestamp).toLocaleDateString();
   };
   const [showAllComments, setShowAllComments] = useState(false);
+  const handleDeletePost = (deletedPostId) => {
+    setPosts(posts.filter((post) => post._id !== deletedPostId));
+  };
 
+  const handleEditPost = (updatedPost) => {
+    setPosts(posts.map(post => post._id === updatedPost._id ? updatedPost : post));
+  };
+  
   return (
     <div className="">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 ">
@@ -66,10 +73,10 @@ export default function Posts() {
                   </div>
                   <div className="flex items-center gap-x-4">
                     {user?.email === post.author.email && (
-                      <Delete id={post._id} />
+                      <Delete id={post._id} onDelete={handleDeletePost} />
                     )}
                     {user?.email === post.author.email && (
-                      <Edit postData={post} />
+                      <Edit postData={post} onEdit={handleEditPost} />
                     )}
                   </div>
                 </div>

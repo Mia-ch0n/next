@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
-export default function EditUserPopup({ userData }) {
+export default function EditUserPopup({ userData, onEdit }) {
     const [open, setOpen] = useState(false);
     const cancelButtonRef = useRef(null);
     const [fullName, setFullName] = useState("");
@@ -18,6 +18,8 @@ export default function EditUserPopup({ userData }) {
       setFullName(userData.fullName || "");
       setEmail(userData.email || "");
       setPassword(userData.password || "");
+    
+
     }
   }, [userData]);
 
@@ -53,7 +55,9 @@ export default function EditUserPopup({ userData }) {
       if (response.ok) {
         console.log("User updated successfully!");
         closePopup();
-        router.refresh();
+        onEdit({ fullName, email, password });
+        location.reload();
+
       } else {
         console.error("Failed to update user:", response.statusText);
       }

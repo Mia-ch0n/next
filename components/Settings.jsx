@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 export default function Profile() {
   const [userInfo, setUserInfo] = useState(null);
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,7 +25,6 @@ export default function Profile() {
         const data = await response.json();
         setUserInfo(data.user);
         setFullName(data.user.fullName);
-        setEmail(data.user.email);
         setProfilePic(data.user.profilePic);
       } else {
         console.error("Failed to fetch user information");
@@ -51,7 +49,6 @@ const handleProfileSubmit = async (e) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ 
-        email: session.user.email,
         fullName,
       }),
     });
@@ -192,25 +189,6 @@ const handleProfileSubmit = async (e) => {
                       </div>
                     </div>
 
-                    <div className="col-span-full">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium leading-6 text-gray"
-                      >
-                        Email address
-                      </label>
-                      <div className="mt-2">
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="block w-full rounded-md border-0 bg-gray/5 py-1.5 text-gray shadow-sm ring-1 ring-inset ring-gray/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div>
                   </div>
 
                   <div className="mt-8 flex">
